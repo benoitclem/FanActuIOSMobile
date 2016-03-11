@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UICategoryLabel.h"
 
 // ARTICLE
 
 @interface ImageHeaderCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *Image;
-@property (weak, nonatomic) IBOutlet UILabel *Category;
+@property (weak, nonatomic) IBOutlet UICategoryLabel *Category;
 
 @end
 

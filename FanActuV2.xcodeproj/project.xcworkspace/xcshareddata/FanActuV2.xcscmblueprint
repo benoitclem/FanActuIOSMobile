@@ -1,24 +1,30 @@
 {
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "FDAA9D34D3B6E0E5DEE7E81FE6C219F692203188",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
-    "ba11ff46-063b-4e91-a4bf-14d55771ed39++505" : {
+    "FDAA9D34D3B6E0E5DEE7E81FE6C219F692203188" : {
 
     }
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "ba11ff46-063b-4e91-a4bf-14d55771ed39++505" : 0
+    "FDAA9D34D3B6E0E5DEE7E81FE6C219F692203188" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "576459D7-6FED-4788-B75D-29592BF9B4AD",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "ba11ff46-063b-4e91-a4bf-14d55771ed39++505" : "ios\/"
+    "FDAA9D34D3B6E0E5DEE7E81FE6C219F692203188" : "FanActuV2\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "FanActuV2",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
-  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "FanActuV2\/FanActuV2.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "FanActuV2.xcodeproj",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/cyanure.point-core.com\/svn\/iOS",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ba11ff46-063b-4e91-a4bf-14d55771ed39++505"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FDAA9D34D3B6E0E5DEE7E81FE6C219F692203188"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/benoitclem\/FanActuIOSMobile.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "FDAA9D34D3B6E0E5DEE7E81FE6C219F692203188"
     }
   ]
 }

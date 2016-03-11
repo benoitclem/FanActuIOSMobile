@@ -18,7 +18,7 @@
 		F525B5E81C8EFD300035A18E /* icône menu.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5E51C8EFD300035A18E /* icône menu.png */; };
 		F525B5E91C8EFD300035A18E /* icône recherche.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5E61C8EFD300035A18E /* icône recherche.png */; };
 		F525B5EA1C8EFD300035A18E /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5E71C8EFD300035A18E /* logo.png */; };
-		F525B5EE1C8F2CD10035A18E /* flèche jaune.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5EB1C8F2CD10035A18E /* flèche jaune.png */; };
+		F525B5EE1C8F2CD10035A18E /* flechejaune.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5EB1C8F2CD10035A18E /* flechejaune.png */; };
 		F525B5EF1C8F2CD10035A18E /* icône fermer.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5EC1C8F2CD10035A18E /* icône fermer.png */; };
 		F525B5F01C8F2CD10035A18E /* icône recherche big.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5ED1C8F2CD10035A18E /* icône recherche big.png */; };
 		F581E4C71C89A76D006C811F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F581E4C61C89A76D006C811F /* main.m */; };
@@ -34,6 +34,7 @@
 		F581E5021C89C55A006C811F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F581E5011C89C55A006C811F /* Foundation.framework */; };
 		F581E5041C89C55E006C811F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F581E5031C89C55E006C811F /* UIKit.framework */; };
 		F581E5061C89C567006C811F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F581E5051C89C567006C811F /* CoreGraphics.framework */; };
+		F5A1D0601C9333910053E178 /* UICategoryLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A1D05F1C9333910053E178 /* UICategoryLabel.m */; };
 		F5CEFB4D1C8D9AA900EB6EF5 /* batvssuper.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB421C8D9AA900EB6EF5 /* batvssuper.jpg */; };
 		F5CEFB4E1C8D9AA900EB6EF5 /* bb8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB431C8D9AA900EB6EF5 /* bb8.jpg */; };
 		F5CEFB4F1C8D9AA900EB6EF5 /* sw.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB441C8D9AA900EB6EF5 /* sw.jpg */; };
@@ -94,7 +95,7 @@
 		F525B5E51C8EFD300035A18E /* icône menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône menu.png"; sourceTree = "<group>"; };
 		F525B5E61C8EFD300035A18E /* icône recherche.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône recherche.png"; sourceTree = "<group>"; };
 		F525B5E71C8EFD300035A18E /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
-		F525B5EB1C8F2CD10035A18E /* flèche jaune.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flèche jaune.png"; sourceTree = "<group>"; };
+		F525B5EB1C8F2CD10035A18E /* flechejaune.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flechejaune.png; sourceTree = "<group>"; };
 		F525B5EC1C8F2CD10035A18E /* icône fermer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône fermer.png"; sourceTree = "<group>"; };
 		F525B5ED1C8F2CD10035A18E /* icône recherche big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône recherche big.png"; sourceTree = "<group>"; };
 		F581E4C21C89A76D006C811F /* FanActuV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FanActuV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,6 +120,8 @@
 		F581E5011C89C55A006C811F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F581E5031C89C55E006C811F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		F581E5051C89C567006C811F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		F5A1D05E1C9333910053E178 /* UICategoryLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICategoryLabel.h; sourceTree = "<group>"; };
+		F5A1D05F1C9333910053E178 /* UICategoryLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICategoryLabel.m; sourceTree = "<group>"; };
 		F5CEFB421C8D9AA900EB6EF5 /* batvssuper.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = batvssuper.jpg; sourceTree = "<group>"; };
 		F5CEFB431C8D9AA900EB6EF5 /* bb8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bb8.jpg; sourceTree = "<group>"; };
 		F5CEFB441C8D9AA900EB6EF5 /* sw.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sw.jpg; sourceTree = "<group>"; };
@@ -244,6 +247,8 @@
 				F5CEFB551C8DA59900EB6EF5 /* HotView.m */,
 				F5CEFB571C8DA5AC00EB6EF5 /* HotView.xib */,
 				F581E4CE1C89A76D006C811F /* Main.storyboard */,
+				F5A1D05E1C9333910053E178 /* UICategoryLabel.h */,
+				F5A1D05F1C9333910053E178 /* UICategoryLabel.m */,
 				F581E4D61C89A76D006C811F /* LaunchScreen.storyboard */,
 				F525B5E21C8EBA780035A18E /* CustomTableViewCells.h */,
 				F525B5E31C8EBA790035A18E /* CustomTableViewCells.m */,
@@ -280,7 +285,7 @@
 		F5CEFB411C8D9AA900EB6EF5 /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
-				F525B5EB1C8F2CD10035A18E /* flèche jaune.png */,
+				F525B5EB1C8F2CD10035A18E /* flechejaune.png */,
 				F525B5EC1C8F2CD10035A18E /* icône fermer.png */,
 				F525B5ED1C8F2CD10035A18E /* icône recherche big.png */,
 				F525B5E51C8EFD300035A18E /* icône menu.png */,
@@ -463,7 +468,7 @@
 				F581E4D51C89A76D006C811F /* Assets.xcassets in Resources */,
 				F525B5E81C8EFD300035A18E /* icône menu.png in Resources */,
 				F581E4D01C89A76D006C811F /* Main.storyboard in Resources */,
-				F525B5EE1C8F2CD10035A18E /* flèche jaune.png in Resources */,
+				F525B5EE1C8F2CD10035A18E /* flechejaune.png in Resources */,
 				F5CEFB511C8D9AA900EB6EF5 /* watermarkVideo.png in Resources */,
 				F5CEFB4F1C8D9AA900EB6EF5 /* sw.jpg in Resources */,
 				F525B5EA1C8EFD300035A18E /* logo.png in Resources */,
@@ -506,6 +511,7 @@
 				F5CEFB521C8D9AA900EB6EF5 /* SwipeView.m in Sources */,
 				F5EF08541C8A22B40046B353 /* SDWebImagePrefetcher.m in Sources */,
 				F5EF08511C8A22B40046B353 /* SDWebImageDownloader.m in Sources */,
+				F5A1D0601C9333910053E178 /* UICategoryLabel.m in Sources */,
 				F525B5DB1C8DF28A0035A18E /* SearchViewController.m in Sources */,
 				F5EF08581C8A22B40046B353 /* UIImage+WebP.m in Sources */,
 				F5EF085A1C8A22B40046B353 /* UIImageView+WebCache.m in Sources */,

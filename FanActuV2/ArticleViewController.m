@@ -195,7 +195,7 @@
         }
         case 2: {
             ParagraphCell *myCell = (ParagraphCell*)[tableView dequeueReusableCellWithIdentifier:@"Paragraph" forIndexPath:indexPath];
-            NSMutableString *richText = [NSMutableString stringWithString: @"<html><head><style type=\"text/css\">* {margin:0;padding:0;};body {font-size: 17px;font-family: Arial;text-align:justify;} p{font-family: Helvetica;text-align:justify;margin-bottom:10px;}</style></head><body>"];
+            NSMutableString *richText = [NSMutableString stringWithString: @"<html><head><style type=\"text/css\">* {margin:0;padding:0;};body {font-size: 20px;font-family: Arial;text-align:justify;} p{font-family: Arial;text-align:justify;margin-bottom:10px;}</style></head><body>"];
             [richText appendString:[blockOfInterest objectForKey:@"text"]];
             [richText appendString: @"</body></html>"];
             NSAttributedString * attrStr = [[NSAttributedString alloc] initWithData:[richText dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType } documentAttributes:nil error:nil];
@@ -234,7 +234,7 @@
             <style type=\"text/css\">body {background-color: transparent; color: black;}</style>\
             </head>\
             <body tstyle=\"margin:0\">\
-            <iframe class=\"player\" type=\"text/html\" width=\"100%%\" height=\"100%%\" src=\"%@\" frameborder=\"0\"></iframe>\
+            <iframe class=\"player\" type=\"text/html\" width=\"350px\" height=\"250px\" src=\"%@\" frameborder=\"0\"></iframe>\
             </body>\
             </html>";
             NSString *strHtml = [NSString stringWithFormat:embedHTML,[NSString stringWithFormat:providerUrl,videoId]];

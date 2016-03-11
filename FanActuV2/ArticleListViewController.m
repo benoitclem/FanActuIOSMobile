@@ -251,23 +251,48 @@
         [B1 setTitle:@"ACTUALITÉS" forState:UIControlStateNormal];
         [B2 setTitle:@"TOP SEMAINE" forState:UIControlStateNormal];
         [B3 setTitle:@"TOP MOIS" forState:UIControlStateNormal];
+        int n = 0;
         if(buttonSelected == 1) {
+            n = 1;
             [B1.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:17]];
             B1.titleLabel.textColor = SelectedColor;
+            // Add the little "down arrow"
+            
+            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
+            CGFloat imgW = arrow.size.width;
+            CGFloat imgH = arrow.size.height;
+            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,0, imgW, imgH)];
+            arrowView.image = arrow;
+            [B1 addSubview:arrowView];
         } else {
             [B1.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:15]];
             B1.titleLabel.textColor = UnselectedColor;
         }
         if(buttonSelected == 2) {
+            n = 3;
             [B2.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:17]];
             B2.titleLabel.textColor = SelectedColor;
+            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
+            CGFloat imgW = arrow.size.width;
+            CGFloat imgH = arrow.size.height;
+            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,0, imgW, imgH)];
+            arrowView.image = arrow;
+            [B2 addSubview:arrowView];
+            
         } else {
             [B2.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:15]];
             B2.titleLabel.textColor = UnselectedColor;
         }
         if(buttonSelected == 3) {
+            n = 5;
             [B3.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:17]];
             B3.titleLabel.textColor = SelectedColor;
+            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
+            CGFloat imgW = arrow.size.width;
+            CGFloat imgH = arrow.size.height;
+            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,0, imgW, imgH)];
+            arrowView.image = arrow;
+            [B3 addSubview:arrowView];
         } else {
             [B3.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:15]];
             B3.titleLabel.textColor = UnselectedColor;
@@ -350,11 +375,14 @@
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Pass the publication Id of selected article
-    NSIndexPath *selected = [self.ArticleTableView indexPathForSelectedRow];
-    NSDictionary *article = [articleList objectAtIndex:selected.row];
-    ArticleViewController *avc = (ArticleViewController*) segue.destinationViewController;
-    [avc setPublicationId:[NSString stringWithFormat:@"%ld",[[article objectForKey:@"idPublication"] integerValue]]];
+    NSLog(@"Segue %@",segue.identifier);
+    if([segue.identifier compare:@"toArticle"] == NSOrderedSame) {
+        // Pass the publication Id of selected article
+        NSIndexPath *selected = [self.ArticleTableView indexPathForSelectedRow];
+        NSDictionary *article = [articleList objectAtIndex:selected.row];
+        ArticleViewController *avc = (ArticleViewController*) segue.destinationViewController;
+        [avc setPublicationId:[NSString stringWithFormat:@"%ld",[[article objectForKey:@"idPublication"] integerValue]]];
+    }
 }
 
 @end
