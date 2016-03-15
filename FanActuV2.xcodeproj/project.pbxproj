@@ -21,6 +21,15 @@
 		F525B5EE1C8F2CD10035A18E /* flechejaune.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5EB1C8F2CD10035A18E /* flechejaune.png */; };
 		F525B5EF1C8F2CD10035A18E /* icône fermer.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5EC1C8F2CD10035A18E /* icône fermer.png */; };
 		F525B5F01C8F2CD10035A18E /* icône recherche big.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5ED1C8F2CD10035A18E /* icône recherche big.png */; };
+		F5412C0D1C986E1600033240 /* BB-8menu6p.png in Resources */ = {isa = PBXBuildFile; fileRef = F5412C0C1C986E1600033240 /* BB-8menu6p.png */; };
+		F56D52591C98411C00D92A64 /* logo_splash5.png in Resources */ = {isa = PBXBuildFile; fileRef = F56D52531C98411C00D92A64 /* logo_splash5.png */; };
+		F56D525A1C98411C00D92A64 /* logo_splash6.png in Resources */ = {isa = PBXBuildFile; fileRef = F56D52541C98411C00D92A64 /* logo_splash6.png */; };
+		F56D525B1C98411C00D92A64 /* logo_splash6p.png in Resources */ = {isa = PBXBuildFile; fileRef = F56D52551C98411C00D92A64 /* logo_splash6p.png */; };
+		F56D525C1C98411C00D92A64 /* splash_screen5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F56D52561C98411C00D92A64 /* splash_screen5.jpg */; };
+		F56D525D1C98411C00D92A64 /* splash_screen6.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F56D52571C98411C00D92A64 /* splash_screen6.jpg */; };
+		F56D525E1C98411C00D92A64 /* splash_screen6p.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F56D52581C98411C00D92A64 /* splash_screen6p.jpg */; };
+		F56D52621C98534400D92A64 /* Globals.m in Sources */ = {isa = PBXBuildFile; fileRef = F56D52611C98534400D92A64 /* Globals.m */; };
+		F56D52651C985D4E00D92A64 /* UniversListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F56D52641C985D4E00D92A64 /* UniversListViewController.m */; };
 		F581E4C71C89A76D006C811F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F581E4C61C89A76D006C811F /* main.m */; };
 		F581E4CA1C89A76D006C811F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F581E4C91C89A76D006C811F /* AppDelegate.m */; };
 		F581E4D01C89A76D006C811F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F581E4CE1C89A76D006C811F /* Main.storyboard */; };
@@ -98,6 +107,18 @@
 		F525B5EB1C8F2CD10035A18E /* flechejaune.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flechejaune.png; sourceTree = "<group>"; };
 		F525B5EC1C8F2CD10035A18E /* icône fermer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône fermer.png"; sourceTree = "<group>"; };
 		F525B5ED1C8F2CD10035A18E /* icône recherche big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône recherche big.png"; sourceTree = "<group>"; };
+		F5412C0C1C986E1600033240 /* BB-8menu6p.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BB-8menu6p.png"; sourceTree = "<group>"; };
+		F56D52531C98411C00D92A64 /* logo_splash5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_splash5.png; sourceTree = "<group>"; };
+		F56D52541C98411C00D92A64 /* logo_splash6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_splash6.png; sourceTree = "<group>"; };
+		F56D52551C98411C00D92A64 /* logo_splash6p.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_splash6p.png; sourceTree = "<group>"; };
+		F56D52561C98411C00D92A64 /* splash_screen5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = splash_screen5.jpg; sourceTree = "<group>"; };
+		F56D52571C98411C00D92A64 /* splash_screen6.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = splash_screen6.jpg; sourceTree = "<group>"; };
+		F56D52581C98411C00D92A64 /* splash_screen6p.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = splash_screen6p.jpg; sourceTree = "<group>"; };
+		F56D525F1C98443200D92A64 /* DevicesMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DevicesMacros.h; sourceTree = "<group>"; };
+		F56D52601C98534400D92A64 /* Globals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
+		F56D52611C98534400D92A64 /* Globals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Globals.m; sourceTree = "<group>"; };
+		F56D52631C985D4E00D92A64 /* UniversListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniversListViewController.h; sourceTree = "<group>"; };
+		F56D52641C985D4E00D92A64 /* UniversListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UniversListViewController.m; sourceTree = "<group>"; };
 		F581E4C21C89A76D006C811F /* FanActuV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FanActuV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F581E4C61C89A76D006C811F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F581E4C81C89A76D006C811F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -239,6 +260,8 @@
 				F525B5D31C8DD23C0035A18E /* MenuViewController.m */,
 				F581E4FB1C89A9BE006C811F /* ArticleListViewController.h */,
 				F581E4FC1C89A9BE006C811F /* ArticleListViewController.m */,
+				F56D52631C985D4E00D92A64 /* UniversListViewController.h */,
+				F56D52641C985D4E00D92A64 /* UniversListViewController.m */,
 				F581E4FE1C89C1CD006C811F /* FanActuHTTPRequest.h */,
 				F581E4FF1C89C1CD006C811F /* FanActuHTTPRequest.m */,
 				F525B5D91C8DF28A0035A18E /* SearchViewController.h */,
@@ -252,6 +275,9 @@
 				F581E4D61C89A76D006C811F /* LaunchScreen.storyboard */,
 				F525B5E21C8EBA780035A18E /* CustomTableViewCells.h */,
 				F525B5E31C8EBA790035A18E /* CustomTableViewCells.m */,
+				F56D525F1C98443200D92A64 /* DevicesMacros.h */,
+				F56D52601C98534400D92A64 /* Globals.h */,
+				F56D52611C98534400D92A64 /* Globals.m */,
 			);
 			path = FanActuV2;
 			sourceTree = "<group>";
@@ -285,6 +311,13 @@
 		F5CEFB411C8D9AA900EB6EF5 /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
+				F5412C0C1C986E1600033240 /* BB-8menu6p.png */,
+				F56D52531C98411C00D92A64 /* logo_splash5.png */,
+				F56D52541C98411C00D92A64 /* logo_splash6.png */,
+				F56D52551C98411C00D92A64 /* logo_splash6p.png */,
+				F56D52561C98411C00D92A64 /* splash_screen5.jpg */,
+				F56D52571C98411C00D92A64 /* splash_screen6.jpg */,
+				F56D52581C98411C00D92A64 /* splash_screen6p.jpg */,
 				F525B5EB1C8F2CD10035A18E /* flechejaune.png */,
 				F525B5EC1C8F2CD10035A18E /* icône fermer.png */,
 				F525B5ED1C8F2CD10035A18E /* icône recherche big.png */,
@@ -420,6 +453,11 @@
 				TargetAttributes = {
 					F581E4C11C89A76D006C811F = {
 						CreatedOnToolsVersion = 7.2.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					F581E4DD1C89A76D006C811F = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -459,9 +497,14 @@
 				F581E4D81C89A76D006C811F /* LaunchScreen.storyboard in Resources */,
 				F5CEFB501C8D9AA900EB6EF5 /* thesimpson.png in Resources */,
 				F5CEFB4E1C8D9AA900EB6EF5 /* bb8.jpg in Resources */,
+				F5412C0D1C986E1600033240 /* BB-8menu6p.png in Resources */,
+				F56D525B1C98411C00D92A64 /* logo_splash6p.png in Resources */,
+				F56D52591C98411C00D92A64 /* logo_splash5.png in Resources */,
 				F5CEFB581C8DA5AC00EB6EF5 /* HotView.xib in Resources */,
 				F525B5E91C8EFD300035A18E /* icône recherche.png in Resources */,
+				F56D525A1C98411C00D92A64 /* logo_splash6.png in Resources */,
 				F525B5F01C8F2CD10035A18E /* icône recherche big.png in Resources */,
+				F56D525D1C98411C00D92A64 /* splash_screen6.jpg in Resources */,
 				F525B5EF1C8F2CD10035A18E /* icône fermer.png in Resources */,
 				F525B5D61C8DDCBD0035A18E /* Montserrat-Light.otf in Resources */,
 				F525B5D01C8DC4260035A18E /* FugazOne-Regular.otf in Resources */,
@@ -471,7 +514,9 @@
 				F525B5EE1C8F2CD10035A18E /* flechejaune.png in Resources */,
 				F5CEFB511C8D9AA900EB6EF5 /* watermarkVideo.png in Resources */,
 				F5CEFB4F1C8D9AA900EB6EF5 /* sw.jpg in Resources */,
+				F56D525C1C98411C00D92A64 /* splash_screen5.jpg in Resources */,
 				F525B5EA1C8EFD300035A18E /* logo.png in Resources */,
+				F56D525E1C98411C00D92A64 /* splash_screen6p.jpg in Resources */,
 				F5CEFB4D1C8D9AA900EB6EF5 /* batvssuper.jpg in Resources */,
 				F525B5D11C8DC4260035A18E /* RobotoCondensed-Bold.otf in Resources */,
 				F525B5D81C8DEAFE0035A18E /* FanActuV2.png in Resources */,
@@ -504,11 +549,13 @@
 				F5CEFB561C8DA59900EB6EF5 /* HotView.m in Sources */,
 				F5EF084E1C8A22B40046B353 /* SDImageCache.m in Sources */,
 				F5EF08521C8A22B40046B353 /* SDWebImageDownloaderOperation.m in Sources */,
+				F56D52651C985D4E00D92A64 /* UniversListViewController.m in Sources */,
 				F5EF085B1C8A22B40046B353 /* UIView+WebCacheOperation.m in Sources */,
 				F581E4D31C89A76D006C811F /* FanActuV2.xcdatamodeld in Sources */,
 				F5EF08551C8A22B40046B353 /* UIButton+WebCache.m in Sources */,
 				F5EF084D1C8A22B40046B353 /* NSData+ImageContentType.m in Sources */,
 				F5CEFB521C8D9AA900EB6EF5 /* SwipeView.m in Sources */,
+				F56D52621C98534400D92A64 /* Globals.m in Sources */,
 				F5EF08541C8A22B40046B353 /* SDWebImagePrefetcher.m in Sources */,
 				F5EF08511C8A22B40046B353 /* SDWebImageDownloader.m in Sources */,
 				F5A1D0601C9333910053E178 /* UICategoryLabel.m in Sources */,

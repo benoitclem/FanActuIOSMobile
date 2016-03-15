@@ -17,7 +17,18 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    sleep(1);
+    
+    // Register for local notification
+    UIUserNotificationType types = UIUserNotificationTypeBadge |
+                                    UIUserNotificationTypeSound |
+                                    UIUserNotificationTypeAlert;
+    
+    UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    [application registerUserNotificationSettings:mySettings];
+    
+    // Register fetch
+    [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
+    //sleep(1);
     return YES;
 }
 
@@ -29,10 +40,14 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    NSLog(@"Create Notif shedule");
+    [self scheduleAlarmForDate:[NSDate dateWithTimeIntervalSinceNow:10]];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    NSLog(@"Create Notif shedule");
+    [self cancelOldNotifications];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -45,6 +60,12 @@
     [self saveContext];
 }
 
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    NSLog(@"Do some networking task");
+    if (completionHandler)
+        completionHandler(UIBackgroundFetchResultFailed);
+}
+    
 #pragma mark - Core Data stack
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -122,6 +143,35 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+    }
+}
+
+- (void)cancelOldNotifications{
+    UIApplication* app = [UIApplication sharedApplication];
+    NSArray*    oldNotifications = [app scheduledLocalNotifications];
+    
+    // Clear out the old notification before scheduling a new one.
+    if ([oldNotifications count] > 0)
+        [app cancelAllLocalNotifications];
+}
+
+- (void)scheduleAlarmForDate:(NSDate*)theDate {
+    UIApplication* app = [UIApplication sharedApplication];
+    
+    // Cancel old notifications if need
+    [self cancelOldNotifications];
+    
+    // Create a new notification.
+    UILocalNotification* alarm = [[UILocalNotification alloc] init];
+    if (alarm)
+    {
+        alarm.fireDate = theDate;
+        alarm.timeZone = [NSTimeZone defaultTimeZone];
+        alarm.repeatInterval = 0;
+        alarm.soundName = @"alarmsound.caf";
+        alarm.alertBody = @"Time to wake up!";
+        
+        [app scheduleLocalNotification:alarm];
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "MenuViewController.h"
+#import "UniversListViewController.h"
 
 #define N_ACTUALITE 5
 #define N_UNIVERS 3
@@ -17,6 +18,10 @@
 
 @implementation MenuViewController
 
+- (IBAction)myUnwindAction:(UIStoryboardSegue *)unwindSegue{
+    NSLog(@"Dismiss Screen UNIVERS");
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle{
     return UIStatusBarStyleLightContent;
 }
@@ -25,7 +30,7 @@
     [super viewDidLoad];
     ActuRows = 0;
     UniversRows = 0;
-    _image.image = [UIImage imageNamed:@"bb8.jpg"];
+    //_image.image = [UIImage imageNamed:@"bb8.jpg"];
     // Do any additional setup after loading the view.
 }
 
@@ -118,8 +123,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"Clicked");
     if((indexPath.section == 0) && (indexPath.row == 0)) {
+        NSLog(@"Clicked On Actu stuffs");
         // Fait a l'arrache
         if(ActuRows == 0) {
             ActuRows += N_ACTUALITE;
@@ -142,6 +147,9 @@
             [self.menuTable deleteRowsAtIndexPaths:deleteIndexPaths withRowAnimation:UITableViewRowAnimationFade];
             [self.menuTable endUpdates];
         }
+    } else if((indexPath.section == 1) && (indexPath.row == 0)) {
+        NSLog(@"Clicked on Actu Stuff");
+        [self performSegueWithIdentifier:@"segue0" sender:self];
     }
 }
 

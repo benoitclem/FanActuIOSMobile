@@ -26,6 +26,9 @@
 }
 @property (weak, nonatomic) IBOutlet UITableView *ArticleTableView;
 @property (weak, nonatomic) IBOutlet UIView *NavBar;
+@property (weak, nonatomic) IBOutlet UIImageView *SplashScreen;
+@property (weak, nonatomic) IBOutlet UIImageView *SplashLogo
+;
 
 - (NSString *) getEncodedDate:(NSString*) dateString;
 

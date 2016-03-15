@@ -265,16 +265,18 @@
                     providerUrl = @"http://www.youtube.com/embed/%@";
                     break;
             }
+            float width = myCell.frame.size.width - 8*2;
+            float height = myCell.frame.size.width;
             NSString *embedHTML = @"\
             <html>\
             <head>\
             <style type=\"text/css\">body {background-color: transparent; color: black;}</style>\
             </head>\
             <body tstyle=\"margin:0\">\
-            <iframe class=\"player\" type=\"text/html\" width=\"350px\" height=\"250px\" src=\"%@\" frameborder=\"0\"></iframe>\
+            <iframe class=\"player\" type=\"text/html\" width=\"%fpx\" height=\"%fpx\" src=\"%@\" frameborder=\"0\"></iframe>\
             </body>\
             </html>";
-            NSString *strHtml = [NSString stringWithFormat:embedHTML,[NSString stringWithFormat:providerUrl,videoId]];
+            NSString *strHtml = [NSString stringWithFormat:embedHTML,[NSString stringWithFormat:providerUrl,width,height,videoId]];
             [myCell.VideoView  loadHTMLString:strHtml baseURL:nil];
             cell = myCell;
             break;

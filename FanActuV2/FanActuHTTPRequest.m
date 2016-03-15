@@ -7,11 +7,21 @@
 //
 
 #import "FanActuHTTPRequest.h"
+#import <UIKit/UIKit.h>
 
 static NSString *baseArticlesListURL = @"http://m.fanactu.com/load/";
 static NSString *baseArticleURL = @"http://m.fanactu.com/article/%@/";
+static NSString *baseUniversURL = @"http://m.fanactu.com/univers/uid/%@";
 
 @implementation FanActuHTTPRequest
+
++ (void)requestUniversWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSString *fullUrlWithUid = [NSString stringWithFormat:baseUniversURL,[[[[UIDevice currentDevice] identifierForVendor] UUIDString] lowercaseString]];
+    NSLog(@"%@",fullUrlWithUid);
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:fullUrlWithUid]];
+    [[session dataTaskWithRequest:request completionHandler: completionBlock] resume];
+}
 
 + (void)requestArticlesWithDate:(NSString*) date andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
     NSURLSession *session = [NSURLSession sharedSession];
@@ -36,6 +46,10 @@ static NSString *baseArticleURL = @"http://m.fanactu.com/article/%@/";
 
 + (NSString*)getParameter:(NSString*) strKey fromArticles:(NSArray*) list withIndex:(NSInteger) integer {
     return (NSString*) [(NSDictionary*)[list objectAtIndex:integer] objectForKey:strKey];
+}
+
++ (NSNumber*)getNumberParameter:(NSString*) strKey fromArticles:(NSArray*) list withIndex:(NSInteger) integer {
+    return (NSNumber*) [(NSDictionary*)[list objectAtIndex:integer] objectForKey:strKey];
 }
 
 @end

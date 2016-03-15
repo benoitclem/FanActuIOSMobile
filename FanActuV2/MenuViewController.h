@@ -15,4 +15,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *menuTable;
 @property (weak, nonatomic) IBOutlet UIImageView *image;
 
+- (IBAction)myUnwindAction:(UIStoryboardSegue*)unwindSegue;
+
 @end

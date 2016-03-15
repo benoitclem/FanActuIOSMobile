@@ -20,6 +20,8 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
+- (void)cancelOldNotifications;
+- (void)scheduleAlarmForDate:(NSDate*)theDate;
 
 @end
 

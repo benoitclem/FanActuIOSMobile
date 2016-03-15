@@ -13,6 +13,8 @@
 #import "FanActuHTTPRequest.h"
 #import "UIImageView+WebCache.h"
 #import "HotView.h"
+#import "DevicesMacros.h"
+#import "Globals.h"
 @import AVFoundation;
 @import AVKit;
 
@@ -54,6 +56,8 @@
 
 - (void)viewDidLoad {
     hotPageControl = nil;
+    UIImage *splashImage;
+    self.SplashScreen.image = splashImage;
     [super viewDidLoad];
     loading = true;
     buttonSelected = 1;
@@ -62,6 +66,17 @@
     UnselectedColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.3];
     NSString *encodedDate = [self getEncodedDate:nil];
     NSLog(@"Date %@",encodedDate);
+    // Register UDID
+    [FanActuHTTPRequest requestUniversWithCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSArray *univers = [(NSDictionary*)[NSJSONSerialization
+                                          JSONObjectWithData:data
+                                          options:NSJSONReadingMutableContainers
+                                      error:&error] objectForKey:@"univers"];
+        NSLog(@"univers %@",univers);
+        // Keep the univers in globals
+        [Globals setUnivers:univers];
+    }];
+    // Get content
     [FanActuHTTPRequest requestArticlesWithDate:encodedDate
         andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
             // handle response
@@ -75,6 +90,7 @@
                            options:NSJSONReadingMutableContainers
                            error:&error] objectForKey:@"actus"];
             NSLog(@"Actus %@ ", articleList);
+            self.SplashScreen.hidden = true;
             [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             
             NSLog(@"ReloadedTableView");
@@ -261,7 +277,7 @@
             UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
             CGFloat imgW = arrow.size.width;
             CGFloat imgH = arrow.size.height;
-            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,0, imgW, imgH)];
+            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,B1.frame.size.height-3, imgW, imgH)];
             arrowView.image = arrow;
             [B1 addSubview:arrowView];
         } else {
@@ -275,7 +291,7 @@
             UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
             CGFloat imgW = arrow.size.width;
             CGFloat imgH = arrow.size.height;
-            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,0, imgW, imgH)];
+            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,B2.frame.size.height-3, imgW, imgH)];
             arrowView.image = arrow;
             [B2 addSubview:arrowView];
             
@@ -290,7 +306,7 @@
             UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
             CGFloat imgW = arrow.size.width;
             CGFloat imgH = arrow.size.height;
-            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,0, imgW, imgH)];
+            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,B3.frame.size.height-3, imgW, imgH)];
             arrowView.image = arrow;
             [B3 addSubview:arrowView];
         } else {
