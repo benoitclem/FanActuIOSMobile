@@ -12,6 +12,7 @@
 // ARTICLE
 
 @interface ImageHeaderCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UIView *Clipper;
 @property (weak, nonatomic) IBOutlet UIImageView *Image;
 @property (weak, nonatomic) IBOutlet UICategoryLabel *Category;
 
@@ -33,7 +34,9 @@
 
 @end
 
-@interface ImageCell : UITableViewCell
+@interface ImageCell : UITableViewCell {
+    NSURL *imgUrl;
+}
 @property (weak, nonatomic) IBOutlet UIImageView *Image;
 
 @end

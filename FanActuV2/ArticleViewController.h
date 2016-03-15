@@ -13,7 +13,7 @@
     NSArray *articlePages;
     NSArray *articleUnivers;
     NSArray *articleConnex;
-    
+    NSMutableDictionary *imgRatiosCache;
     NSMutableArray *composedArticle;
     
     NSString *publicationId;
@@ -21,5 +21,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *articleTable;
 
 - (void) setPublicationId:(NSString*) pId;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end

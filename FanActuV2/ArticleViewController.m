@@ -26,6 +26,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    imgRatiosCache = [NSMutableDictionary dictionary];
+    
+    NSLog(@"frame %f, %f",self.view.frame.size.width,self.view.frame.size.height);
+    
     NSLog(@"ArticleViewController Load %@",publicationId);
 
     [FanActuHTTPRequest requestArticleWithId:publicationId 
@@ -35,6 +39,9 @@
                                                          JSONObjectWithData:data
                                                          options:NSJSONReadingMutableContainers
                                                                   error:&error] objectForKey:@"article"];
+                                   
+                                   //NSLog(@"articleData %@", articleData);
+                                   
                                    articleInfos = [articleData objectForKey:@"infos"];
                                    articlePages = [[articleData objectForKey:@"content"] objectForKey:@"pages"];
                                    articleUnivers = [articleData objectForKey:@"univers"];
@@ -54,6 +61,7 @@
                                                              [articleInfos objectForKey:@"shares"],@"shares",nil];
 
                                    composedArticle = [NSMutableArray arrayWithObjects:coverDic,titleDic,shareDic,nil];
+                                   
                                    
                                    for(NSDictionary *page in articlePages) {
                                        NSArray *blocs = [page objectForKey:@"blocs"];
@@ -76,6 +84,20 @@
                                                                          [bloc objectForKey:@"value"],@"imgLink",
                                                                          [bloc objectForKey:@"copyright"],@"copyright",nil];
                                                [composedArticle addObject:imgDic];
+                                               // This is a dynamic load
+                                               SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                                               [manager downloadImageWithURL:[NSURL URLWithString:[bloc objectForKey:@"value"]]
+                                                                     options:0
+                                                                    progress:^(NSInteger receivedSize, NSInteger expectedSize)
+                                                                        {
+                                                                        NSLog(@"Loading image %@ - %ld/%ld",[bloc objectForKey:@"value"],receivedSize,expectedSize);
+                                                                        }
+                                                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageUrl) {
+                                                                       long n = [((NSNumber*)[bloc objectForKey:@"idBloc"]) integerValue];
+                                                                       float ratio = image.size.width / image.size.height;
+                                                                            [imgRatiosCache setValue:[NSNumber numberWithFloat:ratio] forKey:[NSString stringWithFormat:@"%ld",n ]] ;
+                                                                        }
+                                                                    ];
                                            } else if (([[bloc objectForKey:@"type"] integerValue] == 3) ||
                                                     ([[bloc objectForKey:@"type"] integerValue] == 4) ||
                                                     ([[bloc objectForKey:@"type"] integerValue] == 6)) {
@@ -94,7 +116,8 @@
                                                // Youtube
                                                NSDictionary *vidDic = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                        [ NSNumber numberWithInt:ident],@"ident",
-                                                                       [bloc objectForKey:@"value"],@"id",nil];
+                                                                       [bloc objectForKey:@"value"],@"id",
+                                                                       [NSNumber numberWithFloat:1.5],@"ratio", nil];
                                                [composedArticle addObject:vidDic];
                                            } else if ([[bloc objectForKey:@"type"] integerValue] == 8) {
                                                NSDictionary *annecDic = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -195,7 +218,7 @@
         }
         case 2: {
             ParagraphCell *myCell = (ParagraphCell*)[tableView dequeueReusableCellWithIdentifier:@"Paragraph" forIndexPath:indexPath];
-            NSMutableString *richText = [NSMutableString stringWithString: @"<html><head><style type=\"text/css\">* {margin:0;padding:0;};body {font-size: 20px;font-family: Arial;text-align:justify;} p{font-family: Arial;text-align:justify;margin-bottom:10px;}</style></head><body>"];
+            NSMutableString *richText = [NSMutableString stringWithString: @"<html><head><style type=\"text/css\">* {margin:0;padding:0;};body {font-size: 25px;font-family: Arial;text-align:justify;} p{font-family: Arial;text-align:justify;margin-bottom:10px;}</style></head><body>"];
             [richText appendString:[blockOfInterest objectForKey:@"text"]];
             [richText appendString: @"</body></html>"];
             NSAttributedString * attrStr = [[NSAttributedString alloc] initWithData:[richText dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType } documentAttributes:nil error:nil];
@@ -203,11 +226,25 @@
             //[myCell.Text setText:richText];
             cell = myCell;
             break;
+             
         }
         case 3: {
             ImageCell *myCell = (ImageCell*)[tableView dequeueReusableCellWithIdentifier:@"Image" forIndexPath:indexPath];
             NSString *imgLink = [blockOfInterest objectForKey:@"imgLink"];
             [myCell.Image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
+            /*[myCell.Image sd_setImageWithURL:[NSURL URLWithString:imgLink]
+                            placeholderImage:[UIImage imageNamed:@"bb8.jpg"]
+                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheTpe, NSURL *imgUrl){
+                                       // save height of an image to some cache
+                                       NSNumber *imHeight = [NSNumber numberWithFloat:image.size.height];
+                                       [imgHeightsCache setObject:imHeight forKey:indexPath];
+                                       
+                                       //[self.tableView beginUpdates];
+                                       [self.tableView reloadRowsAtIndexPaths:@[indexPath]
+                                                        withRowAnimation:UITableViewRowAnimationFade];
+                                       //[self.tableView endUpdates];
+                                   }];*/
+            
             cell = myCell;
             break;
         }
@@ -282,11 +319,58 @@
     return cell;
 }
 
-/*
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // try to get image height from your own heights cache
+    // if its is not there return default one
+    NSDictionary *blockOfInterest = (NSDictionary*)[composedArticle objectAtIndex:indexPath.row];
+    NSNumber *blockId = (NSNumber*)[blockOfInterest objectForKey:@"ident"];
+    float margin = 8.0;
+    float width = self.view.frame.size.width - 2*margin;
+    switch ([blockId integerValue]) { //Img
+        case 3: {
+            
+            if(indexPath.row>2) {
+                
+                NSNumber *ratio = [imgRatiosCache objectForKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row-2]];
+                if(ratio) {
+                    float height = width/[ratio floatValue];
+                    return height+2*margin;
+                }
+            }
+        }
+        case 4:
+        case 5:
+        case 6: {
+            NSNumber *ratio = [blockOfInterest objectForKey:@"ratio"];
+            float height = width/[ratio floatValue];
+            return height+2*margin;
+        }
+    }
     return UITableViewAutomaticDimension;
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView_
+{
+    CGFloat actualPosition = scrollView_.contentOffset.y;
+    
+    // Do the nice resizing stuffs for carousel
+    // Get visible cells on table view.
+    NSArray *visibleCells = [self.tableView visibleCells];
+    NSArray *visibleIndexes = [self.tableView indexPathsForVisibleRows];
+    int index = 0;
+    for(NSIndexPath *visibleIndex in visibleIndexes) {
+        if((visibleIndex.section == 0)&&(visibleIndex.row == 0)) {
+            ImageHeaderCell *ivc = (ImageHeaderCell*)[visibleCells objectAtIndex:index];
+            CGFloat computedVisiblePart = 197-actualPosition;
+            NSLog(@"visiblePart %f",computedVisiblePart);
+            ivc.clipsToBounds = computedVisiblePart<197;
+            ivc.Image.frame = (CGRectMake(0,-computedVisiblePart+197, ivc.Image.frame.size.width, computedVisiblePart));
+        }
+        index++;
+    }
+}
+
+/*
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return UITableViewAutomaticDimension;
 }

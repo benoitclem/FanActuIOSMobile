@@ -46,7 +46,7 @@
 - (NSString *) getEncodedDate:(NSString*) dateString{
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     if(dateString == nil) {
-        formatter.dateFormat = @"yyyy-MM-dd hh:mm:ss ZZZ";
+        formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss ZZZ";
         dateString = [formatter stringFromDate:[NSDate date]];
     }
     return [dateString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
@@ -69,12 +69,12 @@
                                                   JSONObjectWithData:data
                                                   options:NSJSONReadingMutableContainers
                                                   error:&error] objectForKey:@"hot"];
-            NSLog(@"hot %@ ", hotList);
+            NSLog(@"Hot %@ ", hotList);
             articleList = [(NSMutableDictionary*)[NSJSONSerialization
                            JSONObjectWithData:data
                            options:NSJSONReadingMutableContainers
                            error:&error] objectForKey:@"actus"];
-            NSLog(@" %@ ", articleList);
+            NSLog(@"Actus %@ ", articleList);
             [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
             
             NSLog(@"ReloadedTableView");
