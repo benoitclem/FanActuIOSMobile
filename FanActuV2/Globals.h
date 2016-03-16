@@ -10,7 +10,15 @@
 
 @interface Globals : NSObject 
 
+// Utils
++ (NSString *) getEncodedDate:(NSString*) dateString;
+
+// Storage
 + (NSArray*) getUnivers;
 + (void) setUnivers:(NSArray*) array;
++ (NSMutableArray*) getHots;
++ (void) setHots:(NSMutableArray*) hots;
++ (NSMutableArray*) getArticles;
++ (void) setArticles:(NSMutableArray*) articles;
 
 @end

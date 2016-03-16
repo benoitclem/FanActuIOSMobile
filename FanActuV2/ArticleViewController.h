@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTTAttributedLabel.h"
 
-@interface ArticleViewController : UIViewController <UITableViewDelegate,UITableViewDataSource> {
+@interface ArticleViewController : UIViewController <UITableViewDelegate,UITableViewDataSource,TTTAttributedLabelDelegate> {
     NSDictionary *articleInfos;
     NSArray *articlePages;
     NSArray *articleUnivers;
@@ -22,5 +23,9 @@
 
 - (void) setPublicationId:(NSString*) pId;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+// Protocol delegate
+- (void)attributedLabel:(TTTAttributedLabel *)label
+   didSelectLinkWithURL:(NSURL *)url;
 
 @end

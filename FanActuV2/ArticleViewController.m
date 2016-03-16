@@ -66,7 +66,7 @@
                                    for(NSDictionary *page in articlePages) {
                                        NSArray *blocs = [page objectForKey:@"blocs"];
                                        for(NSDictionary *bloc in blocs) {
-                                           NSLog(@"BLOCS %@",bloc);
+                                           //NSLog(@"BLOCS %@",bloc);
                                            if (([[bloc objectForKey:@"type"] integerValue] == 1) ||
                                                ([[bloc objectForKey:@"type"] integerValue] == 5)) {
                                                // Paragraph
@@ -93,8 +93,10 @@
                                                                         NSLog(@"Loading image %@ - %ld/%ld",[bloc objectForKey:@"value"],receivedSize,expectedSize);
                                                                         }
                                                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageUrl) {
+                                                                       NSLog(@"Error %@",error);
                                                                        long n = [((NSNumber*)[bloc objectForKey:@"idBloc"]) integerValue];
                                                                        float ratio = image.size.width / image.size.height;
+                                                                       NSLog(@"Caching images %f",ratio);
                                                                             [imgRatiosCache setValue:[NSNumber numberWithFloat:ratio] forKey:[NSString stringWithFormat:@"%ld",n ]] ;
                                                                         }
                                                                     ];
@@ -136,7 +138,7 @@
                                                              [NSNumber numberWithInt:7],@"ident",nil];
                                    [composedArticle addObject:footBar];
                                    
-                                   NSLog(@"Connexes %@",articleConnex);
+                                   //NSLog(@"Connexes %@",articleConnex);
                                    int nConnexes = 0;
                                    for(NSDictionary *article in articleConnex) {
                                        if(nConnexes<5) {
@@ -164,6 +166,13 @@
         self.articleTable.estimatedRowHeight = 100.0;
         self.articleTable.rowHeight = UITableViewAutomaticDimension;
     }
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label
+   didSelectLinkWithURL:(NSURL *)url {
+    NSLog(@"Clicked URL: %@",url);
+    //NSURL *myURL = [NSURL URLWithString:@"todolist://www.acme.com?Quarterly%20Report#200806231300"];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -218,11 +227,33 @@
         }
         case 2: {
             ParagraphCell *myCell = (ParagraphCell*)[tableView dequeueReusableCellWithIdentifier:@"Paragraph" forIndexPath:indexPath];
-            NSMutableString *richText = [NSMutableString stringWithString: @"<html><head><style type=\"text/css\">* {margin:0;padding:0;};body {font-size: 25px;font-family: Arial;text-align:justify;} p{font-family: Arial;text-align:justify;margin-bottom:10px;}</style></head><body>"];
+            
+            NSMutableString *richText = [NSMutableString stringWithFormat: @"<style>body{font-family:'Arial';font-size:%fpx; text-align:justify; margin-top:0px; margin-botom:0px;}</style>",myCell.Text.font.pointSize];
             [richText appendString:[blockOfInterest objectForKey:@"text"]];
-            [richText appendString: @"</body></html>"];
-            NSAttributedString * attrStr = [[NSAttributedString alloc] initWithData:[richText dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType } documentAttributes:nil error:nil];
-            myCell.Text.attributedText = attrStr;
+            NSData *richTextData = [richText dataUsingEncoding:NSUnicodeStringEncoding];
+            NSDictionary *options = @{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                     NSCharacterEncodingDocumentAttribute: @(NSUnicodeStringEncoding)};
+            
+            NSAttributedString *attString2 = [[NSAttributedString alloc] initWithData:richTextData
+                                             options:options
+                                  documentAttributes:nil
+                                               error:nil];
+            
+            myCell.Text.attributedText = attString2;
+            
+            [attString2 enumerateAttribute:NSLinkAttributeName inRange:NSMakeRange(0, attString2.length) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
+                if (value) {
+                    NSLog(@"value %d,%d - %@",range.location,range.length,value);
+                    [myCell.Text addLinkToURL:value withRange:range];
+                }
+            }];
+            
+            // Configure TTTAttributedLAbel
+            myCell.Text.delegate = self;
+            myCell.Text.userInteractionEnabled=YES;
+
+
+            
             //[myCell.Text setText:richText];
             cell = myCell;
             break;
@@ -265,24 +296,34 @@
                     providerUrl = @"http://www.youtube.com/embed/%@";
                     break;
             }
-            float width = myCell.frame.size.width - 8*2;
-            float height = myCell.frame.size.width;
+            float width = myCell.frame.size.width - 16*2;
+            float height = myCell.frame.size.height - 8*2;
             NSString *embedHTML = @"\
             <html>\
             <head>\
-            <style type=\"text/css\">body {background-color: transparent; color: black;}</style>\
+            <style type=\"text/css\">html,body,iframe{background-color: transparent; color: black; margin:0; padding:0;}</style>\
             </head>\
-            <body tstyle=\"margin:0\">\
+            <body>\
             <iframe class=\"player\" type=\"text/html\" width=\"%fpx\" height=\"%fpx\" src=\"%@\" frameborder=\"0\"></iframe>\
             </body>\
             </html>";
             NSString *strHtml = [NSString stringWithFormat:embedHTML,[NSString stringWithFormat:providerUrl,width,height,videoId]];
             [myCell.VideoView  loadHTMLString:strHtml baseURL:nil];
+            myCell.VideoView.scrollView.scrollEnabled = NO;
+            myCell.VideoView.scrollView.bounces = NO;
             cell = myCell;
             break;
         }
         case 7: {
             cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"FooterBar" forIndexPath:indexPath];
+            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
+            CGFloat imgW = arrow.size.width;
+            CGFloat imgH = arrow.size.height;
+            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(cell.frame.size.width/2-imgW/2,cell
+                                                                                   .frame.size.height-3, imgW, imgH)];
+            arrowView.image = arrow;
+            [cell addSubview:arrowView];
+            cell.clipsToBounds = false;
             break;
         }
         case 8: {
@@ -296,6 +337,7 @@
             [myCell.WhoWhen setText:[NSString stringWithFormat:@"%@ | par %@",when,[who uppercaseString]]];
             [myCell.Shares setText:shares];
             [myCell.image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
+
             cell = myCell;
             break;
         }
@@ -334,8 +376,10 @@
             if(indexPath.row>2) {
                 
                 NSNumber *ratio = [imgRatiosCache objectForKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row-2]];
+                //NSLog(@"1 -%@",ratio);
                 if(ratio) {
                     float height = width/[ratio floatValue];
+                    //NSLog(@"1 heightForRow %f",height);
                     return height+2*margin;
                 }
             }
@@ -344,8 +388,11 @@
         case 5:
         case 6: {
             NSNumber *ratio = [blockOfInterest objectForKey:@"ratio"];
-            float height = width/[ratio floatValue];
-            return height+2*margin;
+            if(ratio){
+                float height = width/[ratio floatValue];
+                //NSLog(@"2 heightForRow %f",height);
+                return height+2*margin;
+            }
         }
     }
     return UITableViewAutomaticDimension;
@@ -364,7 +411,7 @@
         if((visibleIndex.section == 0)&&(visibleIndex.row == 0)) {
             ImageHeaderCell *ivc = (ImageHeaderCell*)[visibleCells objectAtIndex:index];
             CGFloat computedVisiblePart = 197-actualPosition;
-            NSLog(@"visiblePart %f",computedVisiblePart);
+            //NSLog(@"visiblePart %f",computedVisiblePart);
             ivc.clipsToBounds = computedVisiblePart<197;
             ivc.Image.frame = (CGRectMake(0,-computedVisiblePart+197, ivc.Image.frame.size.width, computedVisiblePart));
         }

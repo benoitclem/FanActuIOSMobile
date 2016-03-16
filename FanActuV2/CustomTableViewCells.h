@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTTAttributedLabel.h"
 #import "UICategoryLabel.h"
 
 // ARTICLE
@@ -30,7 +31,7 @@
 @end
 
 @interface ParagraphCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UILabel *Text;
+@property (weak, nonatomic) IBOutlet TTTAttributedLabel *Text;
 
 @end
 

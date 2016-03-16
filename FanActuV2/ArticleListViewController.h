@@ -30,8 +30,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *SplashLogo
 ;
 
-- (NSString *) getEncodedDate:(NSString*) dateString;
-
 - (IBAction)myUnwindAction:(UIStoryboardSegue*)unwindSegue;
 - (IBAction)selectedRow:(UIStoryboardSegue*)selectedSegue;
 - (IBAction)search:(UIStoryboardSegue*)searchSegue;

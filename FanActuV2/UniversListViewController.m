@@ -56,7 +56,7 @@
     if(indexPath.section == 0){
         cell = [tableView dequeueReusableCellWithIdentifier:@"TableFixedHeader" forIndexPath:indexPath];
         UIImageView *cover = (UIImageView *)[cell.contentView viewWithTag:10];
-        cover.image = [UIImage imageNamed:@"sw.jpg"];
+        cover.image = [UIImage imageNamed:@"visuelUnivers.jpg"];
         return cell;
     } else {
         NSArray *universList = [Globals getUnivers];
@@ -133,9 +133,11 @@
         if((visibleIndex.section == 0)&&(visibleIndex.row == 0)) {
             UITableViewCell *tvc = [visibleCells objectAtIndex:index];
             UIImageView *img = (UIImageView*)[tvc.contentView viewWithTag:10];
+            UIImageView *overlay = (UIImageView*)[tvc.contentView viewWithTag:11];
             CGFloat computedVisiblePart = 255-actualPosition;
             tvc.clipsToBounds = computedVisiblePart<255;
             img.frame = (CGRectMake(0,-computedVisiblePart+255, img.frame.size.width, computedVisiblePart));
+            overlay.frame = (CGRectMake(0,-computedVisiblePart+255, overlay.frame.size.width, computedVisiblePart));
         }
         index++;
     }

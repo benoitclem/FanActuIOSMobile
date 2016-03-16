@@ -29,7 +29,6 @@
 }
 
 - (IBAction)selectedRow:(UIStoryboardSegue*)selectedSegue{
-    
     MenuViewController *menuVc = (MenuViewController*)selectedSegue.sourceViewController;
     NSIndexPath *ip = [menuVc.menuTable indexPathForSelectedRow];
     NSLog(@"Selected %ld",(long)ip.row);
@@ -45,15 +44,6 @@
     return UIStatusBarStyleLightContent;
 }
 
-- (NSString *) getEncodedDate:(NSString*) dateString{
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    if(dateString == nil) {
-        formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss ZZZ";
-        dateString = [formatter stringFromDate:[NSDate date]];
-    }
-    return [dateString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-}
-
 - (void)viewDidLoad {
     hotPageControl = nil;
     UIImage *splashImage;
@@ -64,38 +54,11 @@
     HotDisplayedHeight = 255.0;
     SelectedColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     UnselectedColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.3];
-    NSString *encodedDate = [self getEncodedDate:nil];
-    NSLog(@"Date %@",encodedDate);
-    // Register UDID
-    [FanActuHTTPRequest requestUniversWithCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
-        NSArray *univers = [(NSDictionary*)[NSJSONSerialization
-                                          JSONObjectWithData:data
-                                          options:NSJSONReadingMutableContainers
-                                      error:&error] objectForKey:@"univers"];
-        NSLog(@"univers %@",univers);
-        // Keep the univers in globals
-        [Globals setUnivers:univers];
-    }];
-    // Get content
-    [FanActuHTTPRequest requestArticlesWithDate:encodedDate
-        andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
-            // handle response
-            hotList = [(NSMutableDictionary*)[NSJSONSerialization
-                                                  JSONObjectWithData:data
-                                                  options:NSJSONReadingMutableContainers
-                                                  error:&error] objectForKey:@"hot"];
-            NSLog(@"Hot %@ ", hotList);
-            articleList = [(NSMutableDictionary*)[NSJSONSerialization
-                           JSONObjectWithData:data
-                           options:NSJSONReadingMutableContainers
-                           error:&error] objectForKey:@"actus"];
-            NSLog(@"Actus %@ ", articleList);
-            self.SplashScreen.hidden = true;
-            [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-            
-            NSLog(@"ReloadedTableView");
-            loading = false;
-            }];
+    
+    // Request the data from globals
+    articleList = [Globals getArticles];
+    hotList = [Globals getHots];
+    
     // Do any additional setup after loading the view.
 }
 
@@ -129,7 +92,7 @@
     NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"visuel" fromArticles:hotList withIndex:index];
     NSLog(@"%@",strImgUrl);
     [hotView.image sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
-    
+    //hotView.clipsToBounds = TRUE;
     // Configure the Category
     NSString *strCategory = [FanActuHTTPRequest getParameter:@"categorie" fromArticles:hotList withIndex:index];
     [hotView.category setText:[strCategory uppercaseString]];
@@ -145,9 +108,27 @@
     return hotView;
 }
 
+- (void)swipeViewWillBeginDragging:(SwipeView *)swipeView {
+    
+
+}
+
+/*
+- (void)swipeViewDidEndDragging:(SwipeView *)swipeView willDecelerate:(BOOL)decelerate;
+{
+    NSArray *views = [swipeView visibleItemViews];
+    for(HotView *hv in views){
+        hv.clipsToBounds = FALSE;
+    }
+}*/
+
 - (void)swipeViewDidScroll:(SwipeView *)swipeView{
     // MAke this differential?
     hotPageControl.currentPage = swipeView.currentItemIndex;
+    /*NSArray *views = [swipeView visibleItemViews];
+    for(HotView *hv in views){
+        hv.clipsToBounds = TRUE;
+    }*/
 }
 
 /*
@@ -189,19 +170,20 @@
             [img sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
             
             // Configure the Cell author
-            UILabel *Who = (UILabel *)[cell.contentView viewWithTag:12];
+            //UILabel *Who = (UILabel *)[cell.contentView viewWithTag:12];
             NSString *strAutor = [FanActuHTTPRequest getParameter:@"author" fromArticles:articleList withIndex:indexPath.row];
-            [Who setText:strAutor];
+            //[Who setText:strAutor];
             
             // Configure the Cell title
             UILabel *Title = (UILabel *)[cell.contentView viewWithTag:10];
             NSString *strTitle = [FanActuHTTPRequest getParameter:@"titre" fromArticles:articleList withIndex:indexPath.row];
-            [Title setText:strTitle];
+            [Title setText:[strTitle uppercaseString]];
             
             // Configure the Cell time
             UILabel *Time = (UILabel *)[cell.contentView viewWithTag:11];
             NSString *strDate = [FanActuHTTPRequest getParameter:@"date" fromArticles:articleList withIndex:indexPath.row];
-            [Time setText:strDate];
+            NSString *dateAutor = [strDate stringByAppendingString:[NSString stringWithFormat:@" | Par %@",strAutor]];
+            [Time setText:dateAutor];
         } else {
             // This is the activity indicator
             cell = [tableView dequeueReusableCellWithIdentifier:@"LoadingIndicator" forIndexPath:indexPath];
@@ -325,7 +307,7 @@
     CGFloat actualPosition = scrollView_.contentOffset.y;
     CGFloat contentHeight = scrollView_.contentSize.height - (self.ArticleTableView.frame.size.height+200);
     
-    CGFloat fullOpacityHeight = 203.0;
+    CGFloat fullOpacityHeight = 120.0;
     // navbar background opacity
     if ((actualPosition<=fullOpacityHeight)&&(actualPosition>0)){
         CGFloat opacity = 1.0-(fullOpacityHeight-actualPosition)/fullOpacityHeight;
@@ -336,7 +318,7 @@
     }
     
     // avoid header goes under navbar
-    CGFloat navBarHeight = 52;
+    CGFloat navBarHeight = 72;
     //NSLog(@"%f",actualPosition);
     if (actualPosition>=navBarHeight) {
         self.ArticleTableView.contentInset = UIEdgeInsetsMake(navBarHeight, 0, 0, 0);
@@ -351,7 +333,7 @@
         // Get The date of last requested article
         NSDictionary *lastArticle = [articleList objectAtIndex:[articleList count] - 1];
         NSString *dateString = [lastArticle objectForKey:@"dateTime"];
-        dateString = [self getEncodedDate:dateString];
+        dateString = [Globals getEncodedDate:dateString];
         NSLog(@"Last Arcticle %@",dateString);
         [FanActuHTTPRequest requestArticlesWithDate:dateString
            andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -378,7 +360,7 @@
             SwipeView *swv = (SwipeView*)[tvc.contentView viewWithTag:10];
             HotView *hv = (HotView*)[swv itemViewAtIndex:swv.currentItemIndex];
             CGFloat computedVisiblePart = 255-actualPosition;
-            NSLog(@"visiblePart %f",computedVisiblePart);
+            //NSLog(@"visiblePart %f",computedVisiblePart);
             hv.image.frame = (CGRectMake(0,-computedVisiblePart+255, hv.image.frame.size.width, computedVisiblePart));
             hv.colorOverlay.frame = (CGRectMake(0,-computedVisiblePart+255, hv.image.frame.size.width, computedVisiblePart));
             //CGRect cellSize = [self.ArticleTableView rectForRowAtIndexPath:visibleIndex];
