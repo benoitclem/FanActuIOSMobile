@@ -37,8 +37,6 @@
     breath.delegate = self;
     [self.Logo.layer addAnimation:breath forKey:@"breath"];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(seguePlease) name:@"seguePlease" object:nil];
-    
     NSDate *startTime = [NSDate date];
     
     NSString *encodedDate = [Globals getEncodedDate:nil];
@@ -49,40 +47,51 @@
                                             JSONObjectWithData:data
                                             options:NSJSONReadingMutableContainers
                                             error:&error] objectForKey:@"univers"];
-        //NSLog(@"univers %@",univers);
+        NSLog(@"univers %@",univers);
         // Keep the univers in globals
         [Globals setUnivers:univers];
     }];
     // Get content
-    [FanActuHTTPRequest requestArticlesWithDate:encodedDate
-                             andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                 // handle response
-                                 NSMutableArray *hotList = [(NSMutableDictionary*)[NSJSONSerialization
-                                                                   JSONObjectWithData:data
-                                                                   options:NSJSONReadingMutableContainers
-                                                                   error:&error] objectForKey:@"hot"];
-                                 //NSLog(@"Hot %@ ", hotList);
-                                 [Globals setHots:hotList];
-                                 NSMutableArray *articleList = [(NSMutableDictionary*)[NSJSONSerialization
-                                                                       JSONObjectWithData:data
-                                                                       options:NSJSONReadingMutableContainers
-                                                                       error:&error] objectForKey:@"actus"];
-                                 //NSLog(@"Actus %@ ", articleList);
-                                 [Globals setArticles:articleList];
-                                 
-                                 NSDate *endTime = [NSDate date];
-                                 NSTimeInterval executionTime = [endTime timeIntervalSinceDate:startTime];
-                                 
-                                 //NSLog(@"ExecTime %f",executionTime);
-                                 if(executionTime<MIN_SPLASH_TIME) {
-                                     //NSLog(@"%f",MIN_SPLASH_TIME-executionTime);
-                                     sleep(MIN_SPLASH_TIME-executionTime);
-                                 }
-                                 
-                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                     [self performSegueWithIdentifier:@"toMain" sender: self];
-                                 });
-                             }];
+
+    [FanActuHTTPRequest requestArticlesWithCategory:@0
+                                            univers:@0
+                                               date:encodedDate
+                                 andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+                            NSMutableDictionary * all = [NSJSONSerialization
+                                                             JSONObjectWithData:data
+                                                             options:NSJSONReadingMutableContainers
+                                                             error:&error];
+
+                                     // handle response
+                                     NSMutableArray *hotList = [all objectForKey:@"hot"];
+                                     NSLog(@"Hot %@ ", hotList);
+                                     [Globals setHots:hotList];
+
+                                     NSMutableArray *actuList = [all objectForKey:@"actus"];
+                                     NSLog(@"Actus %@ ", actuList);
+                                     [Globals setActus:actuList];
+
+                                     NSMutableArray *topsWeek = [all objectForKey:@"topWeek"];
+                                     NSLog(@"week %@ ", topsWeek);
+                                     [Globals setTopsWeek:topsWeek];
+                                     
+                                     NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
+                                     NSLog(@"month %@ ", topsMonth);
+                                     [Globals setTopsMonth:topsMonth];
+
+                                     NSDate *endTime = [NSDate date];
+                                     NSTimeInterval executionTime = [endTime timeIntervalSinceDate:startTime];
+
+                                     //NSLog(@"ExecTime %f",executionTime);
+                                     if(executionTime<MIN_SPLASH_TIME) {
+                                         //NSLog(@"%f",MIN_SPLASH_TIME-executionTime);
+                                         sleep(MIN_SPLASH_TIME-executionTime);
+                                     }
+
+                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                         [self performSegueWithIdentifier:@"toMain" sender: self];
+                                     });
+                                 }];
 
     // Do any additional setup after loading the view.
 }

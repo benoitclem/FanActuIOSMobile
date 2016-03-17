@@ -9,33 +9,71 @@
 #import "FanActuHTTPRequest.h"
 #import <UIKit/UIKit.h>
 
-static NSString *baseArticlesListURL = @"http://m.fanactu.com/load/";
-static NSString *baseArticleURL = @"http://m.fanactu.com/article/%@/";
-static NSString *baseUniversURL = @"http://m.fanactu.com/univers/uid/%@";
+static NSString *baseURL = @"http://m.fanactu.com/device";
+static NSString *articlesListURN = @"load";
+static NSString *articleURN = @"article";
+static NSString *universURN = @"univers";
+static NSString *universUpdateURN = @"univers/update";
 
 @implementation FanActuHTTPRequest
 
-+ (void)requestUniversWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
++ (NSString*)getDeviceUID {
+    return [[[[UIDevice currentDevice] identifierForVendor] UUIDString] lowercaseString];
+}
+
++ (void)request:(NSString*)url withPostString:(NSString*)postString andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock  {
+    // Request
     NSURLSession *session = [NSURLSession sharedSession];
-    NSString *fullUrlWithUid = [NSString stringWithFormat:baseUniversURL,[[[[UIDevice currentDevice] identifierForVendor] UUIDString] lowercaseString]];
-    NSLog(@"%@",fullUrlWithUid);
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:fullUrlWithUid]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
+    if(postString!=nil){
+        NSLog(@"%@ - %@",url,postString);
+        [request setHTTPMethod:@"POST"];
+        [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
+    }
     [[session dataTaskWithRequest:request completionHandler: completionBlock] resume];
 }
 
-+ (void)requestArticlesWithDate:(NSString*) date andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:baseArticlesListURL]];
-    [request setHTTPMethod:@"POST"];
-    NSString *postString = [NSString stringWithFormat:@"idType=0&idUnivers=0&date=%@&newSection=1",date];
-    [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
-    [[session dataTaskWithRequest:request completionHandler: completionBlock] resume];
++ (void)requestArticlesWithCategory:(NSNumber*)idCategory
+                            univers:(NSNumber*)idUnivers
+                               date:(NSString*) date
+                 andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
+    // Compose Url for requesting the ArticlesList
+    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],articlesListURN];
+    // Compose PostString
+    NSString *postString = [NSString stringWithFormat:@"idCategorie=%ld&idUnivers=%ld&date=%@&newSection=1",[idCategory integerValue],[idUnivers integerValue],date];
+    // Do the request
+    [FanActuHTTPRequest request:url withPostString:postString andCompletionBlock:completionBlock];
+}
+
++ (void)requestArticlesWithKeyWords:(NSString*)keywords
+                 andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
+    // Compose Url for requesting the ArticlesList
+    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],articlesListURN];
+    // Compose PostString
+    NSString *postString = [NSString stringWithFormat:@"k=%@",keywords];
+    // Do the request
+    [FanActuHTTPRequest request:url withPostString:postString andCompletionBlock:completionBlock];
 }
 
 + (void)requestArticleWithId:(NSString*) articleId andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:baseArticleURL,articleId]]];
-    [[session dataTaskWithRequest:request completionHandler: completionBlock] resume];
+    // Compose Url for requesting the Article
+    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],articleURN,articleId];
+    // Do the request
+    [FanActuHTTPRequest request:url withPostString:nil andCompletionBlock:completionBlock];
+}
+
++ (void)requestUniversWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
+    // Compose Url for requesting the Univers
+    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],universURN];
+    // Do the request
+    [FanActuHTTPRequest request:url withPostString:nil andCompletionBlock:completionBlock];
+}
+
++ (void)updateUniversWithId:(NSString*) idUnivers andLevel:(NSNumber*) level andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
+    // Compose Url for requesting the Univers
+    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],universUpdateURN];
+    // Do the request
+    [FanActuHTTPRequest request:url withPostString:nil andCompletionBlock:completionBlock];
 }
 
 + (void)requestImageWithUrlString:(NSString*) urlString andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock{

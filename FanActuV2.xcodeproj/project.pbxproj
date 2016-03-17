@@ -55,6 +55,7 @@
 		F581E5041C89C55E006C811F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F581E5031C89C55E006C811F /* UIKit.framework */; };
 		F581E5061C89C567006C811F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F581E5051C89C567006C811F /* CoreGraphics.framework */; };
 		F5A1D0601C9333910053E178 /* UICategoryLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A1D05F1C9333910053E178 /* UICategoryLabel.m */; };
+		F5C8F5D11C9B189300D4C69B /* placeholderImg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5C8F5D01C9B189300D4C69B /* placeholderImg.jpg */; };
 		F5CEFB4D1C8D9AA900EB6EF5 /* batvssuper.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB421C8D9AA900EB6EF5 /* batvssuper.jpg */; };
 		F5CEFB4E1C8D9AA900EB6EF5 /* bb8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB431C8D9AA900EB6EF5 /* bb8.jpg */; };
 		F5CEFB4F1C8D9AA900EB6EF5 /* sw.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB441C8D9AA900EB6EF5 /* sw.jpg */; };
@@ -167,6 +168,7 @@
 		F581E5051C89C567006C811F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F5A1D05E1C9333910053E178 /* UICategoryLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICategoryLabel.h; sourceTree = "<group>"; };
 		F5A1D05F1C9333910053E178 /* UICategoryLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICategoryLabel.m; sourceTree = "<group>"; };
+		F5C8F5D01C9B189300D4C69B /* placeholderImg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = placeholderImg.jpg; sourceTree = "<group>"; };
 		F5CEFB421C8D9AA900EB6EF5 /* batvssuper.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = batvssuper.jpg; sourceTree = "<group>"; };
 		F5CEFB431C8D9AA900EB6EF5 /* bb8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bb8.jpg; sourceTree = "<group>"; };
 		F5CEFB441C8D9AA900EB6EF5 /* sw.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sw.jpg; sourceTree = "<group>"; };
@@ -280,12 +282,14 @@
 				F581E4D41C89A76D006C811F /* Assets.xcassets */,
 				F581E4C91C89A76D006C811F /* AppDelegate.m */,
 				F581E4C81C89A76D006C811F /* AppDelegate.h */,
+				F5412C111C9958AF00033240 /* SplashScreenViewController.h */,
+				F5412C121C9958AF00033240 /* SplashScreenViewController.m */,
+				F581E4FB1C89A9BE006C811F /* ArticleListViewController.h */,
+				F581E4FC1C89A9BE006C811F /* ArticleListViewController.m */,
 				F525B5DC1C8DFEFE0035A18E /* ArticleViewController.h */,
 				F525B5DD1C8DFEFE0035A18E /* ArticleViewController.m */,
 				F525B5D21C8DD23C0035A18E /* MenuViewController.h */,
 				F525B5D31C8DD23C0035A18E /* MenuViewController.m */,
-				F581E4FB1C89A9BE006C811F /* ArticleListViewController.h */,
-				F581E4FC1C89A9BE006C811F /* ArticleListViewController.m */,
 				F56D52631C985D4E00D92A64 /* UniversListViewController.h */,
 				F56D52641C985D4E00D92A64 /* UniversListViewController.m */,
 				F581E4FE1C89C1CD006C811F /* FanActuHTTPRequest.h */,
@@ -303,8 +307,6 @@
 				F56D525F1C98443200D92A64 /* DevicesMacros.h */,
 				F56D52601C98534400D92A64 /* Globals.h */,
 				F56D52611C98534400D92A64 /* Globals.m */,
-				F5412C111C9958AF00033240 /* SplashScreenViewController.h */,
-				F5412C121C9958AF00033240 /* SplashScreenViewController.m */,
 			);
 			path = FanActuV2;
 			sourceTree = "<group>";
@@ -338,6 +340,7 @@
 		F5CEFB411C8D9AA900EB6EF5 /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
+				F5C8F5D01C9B189300D4C69B /* placeholderImg.jpg */,
 				F5412C271C99E13900033240 /* horloge.png */,
 				F5412C281C99E13900033240 /* visuelUnivers.jpg */,
 				F5412C141C99925400033240 /* articleFb.png */,
@@ -532,6 +535,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5CEFB501C8D9AA900EB6EF5 /* thesimpson.png in Resources */,
+				F5C8F5D11C9B189300D4C69B /* placeholderImg.jpg in Resources */,
 				F5412C1D1C99925400033240 /* articleG+.png in Resources */,
 				F5CEFB4E1C8D9AA900EB6EF5 /* bb8.jpg in Resources */,
 				F5412C0D1C986E1600033240 /* BB-8menu6p.png in Resources */,

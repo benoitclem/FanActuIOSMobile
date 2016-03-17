@@ -203,7 +203,7 @@
             ImageHeaderCell *myCell = (ImageHeaderCell*)[tableView dequeueReusableCellWithIdentifier:@"ImageHeader" forIndexPath:indexPath];
             NSString *visualCoverUrl = (NSString *)[blockOfInterest objectForKey:@"visualCover"];
             NSString *category = (NSString *)[blockOfInterest objectForKey:@"category"];
-            [myCell.Image sd_setImageWithURL:[NSURL URLWithString:visualCoverUrl] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
+            [myCell.Image sd_setImageWithURL:[NSURL URLWithString:visualCoverUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
             [myCell.Category setText:[category uppercaseString]];
             cell = myCell;
             break;
@@ -262,9 +262,9 @@
         case 3: {
             ImageCell *myCell = (ImageCell*)[tableView dequeueReusableCellWithIdentifier:@"Image" forIndexPath:indexPath];
             NSString *imgLink = [blockOfInterest objectForKey:@"imgLink"];
-            [myCell.Image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
+            [myCell.Image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
             /*[myCell.Image sd_setImageWithURL:[NSURL URLWithString:imgLink]
-                            placeholderImage:[UIImage imageNamed:@"bb8.jpg"]
+                            placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]
                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheTpe, NSURL *imgUrl){
                                        // save height of an image to some cache
                                        NSNumber *imHeight = [NSNumber numberWithFloat:image.size.height];
@@ -336,7 +336,7 @@
             [myCell.Title setText:[title uppercaseString]];
             [myCell.WhoWhen setText:[NSString stringWithFormat:@"%@ | par %@",when,[who uppercaseString]]];
             [myCell.Shares setText:shares];
-            [myCell.image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
+            [myCell.image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
 
             cell = myCell;
             break;
@@ -350,7 +350,7 @@
             NSLog(@"anecdote %@", anecdoteString);
             [myCell.title setText:title];
             [myCell.anecdote setText:anecdoteString];
-            [myCell.image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
+            [myCell.image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
             cell = myCell;
             break;
         }

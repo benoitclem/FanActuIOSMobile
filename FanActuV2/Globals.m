@@ -10,7 +10,9 @@
 
 static NSArray *univers = nil;
 static NSMutableArray *hots = nil;
-static NSMutableArray *articles = nil;
+static NSMutableArray *actus = nil;
+static NSMutableArray *topsWeek = nil;
+static NSMutableArray *topsMonth = nil;
 
 @implementation Globals
 
@@ -41,12 +43,28 @@ static NSMutableArray *articles = nil;
     hots = [[NSMutableArray alloc] initWithArray:hotlist copyItems:YES];
 }
 
-+ (NSMutableArray*) getArticles {
-    return articles;
++ (NSMutableArray*) getActus {
+    return actus;
 }
 
-+ (void) setArticles:(NSMutableArray*) articlesList {
-   articles = [[NSMutableArray alloc] initWithArray:articlesList copyItems:YES];
++ (void) setActus:(NSMutableArray*) articlesList {
+    actus = [[NSMutableArray alloc] initWithArray:articlesList copyItems:YES];
+}
+
++ (NSMutableArray*) getTopsWeek {
+    return topsWeek;
+}
+
++ (void) setTopsWeek:(NSMutableArray*) articlesList {
+    topsWeek = [[NSMutableArray alloc] initWithArray:articlesList copyItems:YES];
+}
+
++ (NSMutableArray*) getTopsMonth {
+    return topsMonth;
+}
+
++ (void) setTopsMonth:(NSMutableArray*) articlesList {
+    topsMonth = [[NSMutableArray alloc] initWithArray:articlesList copyItems:YES];
 }
 
 @end

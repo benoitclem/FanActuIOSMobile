@@ -12,6 +12,4 @@
 @property (weak, nonatomic) IBOutlet UIImageView *BackGround;
 @property (weak, nonatomic) IBOutlet UIImageView *Logo;
 
-- (void) seguePlease;   
-
 @end

@@ -28,7 +28,7 @@
     [super viewDidLoad];
     loading = true;
     // Register UDID
-    [FanActuHTTPRequest requestUniversWithCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
+    /* [FanActuHTTPRequest requestUniversWithCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSArray *univers = [(NSDictionary*)[NSJSONSerialization
                                           JSONObjectWithData:data
                                           options:NSJSONReadingMutableContainers
@@ -36,13 +36,17 @@
         NSLog(@"univers %@",univers);
         // Keep the univers in globals
         [Globals setUnivers:univers];
-    }];
+    }]; */
     // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) setNotificationScreen {
+    isNotificationScreen = true;
 }
 
 // =========== UITableView Delegates ===========
@@ -62,23 +66,28 @@
         NSArray *universList = [Globals getUnivers];
         if(indexPath.row != [universList count]) {
             // Get a cell
-            cell = [tableView dequeueReusableCellWithIdentifier:@"UniversRow" forIndexPath:indexPath];
+            if(isNotificationScreen)
+                cell = [tableView dequeueReusableCellWithIdentifier:@"UniversRowNotif" forIndexPath:indexPath];
+            else
+                cell = [tableView dequeueReusableCellWithIdentifier:@"UniversRow" forIndexPath:indexPath];
             
             // Configure the Cell img
             UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:20];
-            NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"Visuel" fromArticles:universList withIndex:indexPath.row];
+            NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"visuel" fromArticles:universList withIndex:indexPath.row];
             //NSLog(@"url %@",strImgUrl);
-            [img sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"bb8.jpg"]];
+            [img sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
             
             // Configure the Cell author
             UILabel *Title = (UILabel *)[cell.contentView viewWithTag:10];
             NSString *strTitle = [FanActuHTTPRequest getParameter:@"nom" fromArticles:universList withIndex:indexPath.row];
             [Title setText:strTitle];
             
-            // Configure the Cell title
-            UISwitch *sw = (UISwitch *)[cell.contentView viewWithTag:11];
-            NSNumber *state = [FanActuHTTPRequest getNumberParameter:@"level" fromArticles:universList withIndex:indexPath.row];
-            [sw setOn:([state integerValue] == 1)];
+            if(isNotificationScreen) {
+                // Configure the Cell title
+                UISwitch *sw = (UISwitch *)[cell.contentView viewWithTag:11];
+                NSNumber *state = [FanActuHTTPRequest getNumberParameter:@"level" fromArticles:universList withIndex:indexPath.row];
+                [sw setOn:([state integerValue] == 1)];
+            }
         }
     }
 
@@ -145,9 +154,9 @@
 
 
 #pragma mark - Navigation
-
+/*
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     NSLog(@"Make the HTTP Request to update the server notification side");
 }
-
+*/
 @end

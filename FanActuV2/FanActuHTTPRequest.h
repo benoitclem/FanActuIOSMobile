@@ -12,9 +12,16 @@ typedef void (^FanActuHTTPREquestCompletionHandler)(NSData *data, NSURLResponse 
 
 @interface FanActuHTTPRequest : NSObject
 
-+ (void)requestUniversWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock;
-+ (void)requestArticlesWithDate:(NSString*) date andCompletionBlock:(FanActuHTTPREquestCompletionHandler)completionBlock;
-+ (void)requestArticleWithId:(NSString*) articleId andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock;
++ (NSString*)getDeviceUID ;
++ (void)request:(NSString*)url withPostString:(NSString*)postString andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock ;
++ (void)requestArticlesWithCategory:(NSNumber*)idCategory
+                            univers:(NSNumber*)idUnivers
+                               date:(NSString*) date
+                 andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock ;
++ (void)requestArticlesWithKeyWords:(NSString*)keywords
+                 andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock ;
++ (void)requestArticleWithId:(NSString*) articleId andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock ;
++ (void)requestUniversWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock ;
 + (void)requestImageWithUrlString:(NSString*) urlString andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock;
 + (NSString*)getParameter:(NSString*) strKey fromArticles:(NSArray*) list withIndex:(NSInteger) integer;
 + (NSNumber*)getNumberParameter:(NSString*) strKey fromArticles:(NSArray*) list withIndex:(NSInteger) integer;

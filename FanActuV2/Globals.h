@@ -18,7 +18,11 @@
 + (void) setUnivers:(NSArray*) array;
 + (NSMutableArray*) getHots;
 + (void) setHots:(NSMutableArray*) hots;
-+ (NSMutableArray*) getArticles;
-+ (void) setArticles:(NSMutableArray*) articles;
++ (NSMutableArray*) getActus;
++ (void) setActus:(NSMutableArray*) articles;
++ (NSMutableArray*) getTopsWeek;
++ (void) setTopsWeek:(NSMutableArray*) articlesList;
++ (NSMutableArray*) getTopsMonth;
++ (void) setTopsMonth:(NSMutableArray*) articlesList;
 
 @end

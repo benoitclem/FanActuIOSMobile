@@ -10,9 +10,12 @@
 
 @interface UniversListViewController : UIViewController <UITableViewDataSource,UITableViewDelegate> {
     CGFloat tableHeaderHeight;
+    BOOL isNotificationScreen;
     BOOL loading;
 }
 @property (weak, nonatomic) IBOutlet UITableView *UniversTableView;
 @property (weak, nonatomic) IBOutlet UIView *NavBar;
+
+- (void) setNotificationScreen;
 
 @end

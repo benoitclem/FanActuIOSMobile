@@ -30,7 +30,7 @@
     [super viewDidLoad];
     ActuRows = 0;
     UniversRows = 0;
-    //_image.image = [UIImage imageNamed:@"bb8.jpg"];
+    //_image.image = [UIImage imageNamed:@"placeholderImg.jpg"];
     // Do any additional setup after loading the view.
 }
 
@@ -40,7 +40,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -85,12 +85,18 @@
                     break;
             }
         }
-    } else if(indexPath.section == 1) {
+    }else if(indexPath.section == 1) {
         if(indexPath.row == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"bigEntry" forIndexPath:indexPath];
             UILabel *rowLabel = (UILabel *)[cell.contentView viewWithTag:10];
             rowLabel.text = @"UNIVERS";
-        } else {
+        }
+    } else if(indexPath.section == 2) {
+        if(indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"bigEntry" forIndexPath:indexPath];
+            UILabel *rowLabel = (UILabel *)[cell.contentView viewWithTag:10];
+            rowLabel.text = @"NOTIFICATIONS";
+        } /*else {
             cell = [tableView dequeueReusableCellWithIdentifier:@"smallEntry" forIndexPath: indexPath];
             UILabel *rowLabel = (UILabel *)[cell.contentView viewWithTag:10];
             switch(indexPath.row) {
@@ -107,7 +113,7 @@
                     rowLabel.text = @"NOPPPS";
                     break;
             }
-        }
+        } */
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:@"bigEntry" forIndexPath:indexPath];
         UILabel *rowLabel = (UILabel *)[cell.contentView viewWithTag:10];
@@ -123,44 +129,55 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if((indexPath.section == 0) && (indexPath.row == 0)) {
-        NSLog(@"Clicked On Actu stuffs");
-        // Fait a l'arrache
-        if(ActuRows == 0) {
-            ActuRows += N_ACTUALITE;
-            NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
-            for( int i = 0; i<N_ACTUALITE; i++){
-                [insertIndexPaths addObject:[NSIndexPath indexPathForRow:i+1 inSection:0]];
+    if(indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            NSLog(@"Clicked On Actu stuffs");
+            // Fait a l'arrache
+            if(ActuRows == 0) {
+                ActuRows += N_ACTUALITE;
+                NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] init];
+                for( int i = 0; i<N_ACTUALITE; i++){
+                    [insertIndexPaths addObject:[NSIndexPath indexPathForRow:i+1 inSection:0]];
+                }
+                [self.menuTable beginUpdates];
+                [self.menuTable insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+                //[self.menuTable deleteRowsAtIndexPaths:deleteIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+                [self.menuTable endUpdates];
+            } else {
+                ActuRows -= N_ACTUALITE;
+                NSMutableArray *deleteIndexPaths = [[NSMutableArray alloc] init];
+                for( int i = 0; i<N_ACTUALITE; i++){
+                    [deleteIndexPaths addObject:[NSIndexPath indexPathForRow:i+1 inSection:0]];
+                }
+                [self.menuTable beginUpdates];
+                //[self.menuTable insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+                [self.menuTable deleteRowsAtIndexPaths:deleteIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+                [self.menuTable endUpdates];
             }
-            [self.menuTable beginUpdates];
-            [self.menuTable insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-            //[self.menuTable deleteRowsAtIndexPaths:deleteIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-            [self.menuTable endUpdates];
-        } else {
-            ActuRows -= N_ACTUALITE;
-            NSMutableArray *deleteIndexPaths = [[NSMutableArray alloc] init];
-            for( int i = 0; i<N_ACTUALITE; i++){
-                [deleteIndexPaths addObject:[NSIndexPath indexPathForRow:i+1 inSection:0]];
-            }
-            [self.menuTable beginUpdates];
-            //[self.menuTable insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-            [self.menuTable deleteRowsAtIndexPaths:deleteIndexPaths withRowAnimation:UITableViewRowAnimationFade];
-            [self.menuTable endUpdates];
+        }else  {
+            NSLog(@"Selected Category");
         }
-    } else if((indexPath.section == 1) && (indexPath.row == 0)) {
-        NSLog(@"Clicked on Actu Stuff");
+    } else if(((indexPath.section == 1)||(indexPath.section == 2)) && (indexPath.row == 0)) {
+        NSLog(@"Clicked on Univers or Notification Stuff");
         [self performSegueWithIdentifier:@"segue0" sender:self];
     }
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    NSIndexPath *path = [self.menuTable indexPathForSelectedRow];
+    NSLog(@"%@",path);
+    if(path.section == 2) {
+        NSLog(@"Go to Notifications");
+        UniversListViewController *ulvc = (UniversListViewController*) segue.destinationViewController;
+        [ulvc setNotificationScreen];
+    }
 }
-*/
+
 
 @end
