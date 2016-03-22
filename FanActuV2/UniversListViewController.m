@@ -7,6 +7,8 @@
 //
 
 #import "UniversListViewController.h"
+#import "ArticleListViewController.h"
+#import "UISwitchWithData.h"
 #import "FanActuHTTPRequest.h"
 #import "UIImageView+WebCache.h"
 #import "DevicesMacros.h"
@@ -20,6 +22,33 @@
 
 @implementation UniversListViewController
 
+-(IBAction)switched:(id)sender {
+    UISwitchWithData *s = (UISwitchWithData*)sender;
+    NSString *strIndex = [NSString stringWithFormat:@"%ld",[s getValue]];
+    NSNumber *level = (s.on)?@1:@0;
+    NSLog(@"Switched %@ to %@",strIndex,level);
+    [FanActuHTTPRequest updateUniversWithId:strIndex andLevel:level andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+        NSLog(@"Update Done");
+    }];
+
+}
+
+- (IBAction)ValueChanged:(id)sender {
+    //NSLog(@"Slider Value Changed");
+    UISlider *slider = (UISlider*) sender;
+    NSLog(@"Slider Value = %f",slider.value);
+    if(slider.value <0.33) {
+        [slider setValue:0.0 animated:YES];
+        [actuLabelLevel setText:@"MINUS"];
+    }else if(slider.value < 0.66) {
+        [slider setValue:0.5 animated:YES];
+        [actuLabelLevel setText:@"MOYEN"];
+    } else {
+        [slider setValue:1.0 animated:YES];
+        [actuLabelLevel setText:@"HARDCORE"];
+    }
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle{
     return UIStatusBarStyleLightContent;
 }
@@ -27,6 +56,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     loading = true;
+    NSArray *tempUniversList = [Globals getUnivers];
+    universList = [NSMutableArray arrayWithArray: [tempUniversList subarrayWithRange:NSMakeRange(0, [tempUniversList count]-1)]];
     // Register UDID
     /* [FanActuHTTPRequest requestUniversWithCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSArray *univers = [(NSDictionary*)[NSJSONSerialization
@@ -49,10 +80,25 @@
     isNotificationScreen = true;
 }
 
+- (NSString*) getSelectedIdUnivers {
+    return selectedIdUnivers;
+}
+
 // =========== UITableView Delegates ===========
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if(section == 0)
+        return 1;
+    else {
+        if(isNotificationScreen)
+            return [universList count] +1;
+        else
+            return [universList count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -63,13 +109,44 @@
         cover.image = [UIImage imageNamed:@"visuelUnivers.jpg"];
         return cell;
     } else {
-        NSArray *universList = [Globals getUnivers];
-        if(indexPath.row != [universList count]) {
-            // Get a cell
-            if(isNotificationScreen)
+
+        if(isNotificationScreen) {
+            if(indexPath.row == 0){
+                cell = [tableView dequeueReusableCellWithIdentifier:@"ActuRow" forIndexPath:indexPath];
+                UILabel *Title = (UILabel*)[cell.contentView viewWithTag:10];
+                [Title setText:@"ACTU"];
+                UISlider *Slider = (UISlider*)[cell.contentView viewWithTag:11];
+                Slider.continuous = false;
+                Slider.value = 1.0;
+                UILabel *actuLabel = (UILabel*)[cell.contentView viewWithTag:12];
+                actuLabelLevel = actuLabel;
+                [actuLabel setText:@"HARDCORE"];
+            } else {
+                //
                 cell = [tableView dequeueReusableCellWithIdentifier:@"UniversRowNotif" forIndexPath:indexPath];
-            else
-                cell = [tableView dequeueReusableCellWithIdentifier:@"UniversRow" forIndexPath:indexPath];
+                
+                // Configure the Cell img
+                UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:20];
+                NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"visuel" fromArticles:universList withIndex:indexPath.row-1];
+                //NSLog(@"url %@",strImgUrl);
+                [img sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
+                
+                // Configure the Cell author
+                UILabel *Title = (UILabel *)[cell.contentView viewWithTag:10];
+                NSString *strTitle = [FanActuHTTPRequest getParameter:@"nom" fromArticles:universList withIndex:indexPath.row-1];
+                [Title setText:[strTitle uppercaseString]];
+
+                // Configure the Cell title
+                UISwitchWithData *sw = (UISwitchWithData *)[cell.contentView viewWithTag:11];
+                NSNumber *n = [FanActuHTTPRequest getNumberParameter:@"idUnivers" fromArticles:universList withIndex:indexPath.row-1];
+                NSLog(@"%@",n);
+                [sw setValue:[n integerValue]];
+                NSNumber *state = [FanActuHTTPRequest getNumberParameter:@"level" fromArticles:universList withIndex:indexPath.row-1];
+                [sw setOn:([state integerValue] == 1)];
+            }
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        } else {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"UniversRow" forIndexPath:indexPath];
             
             // Configure the Cell img
             UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:20];
@@ -80,28 +157,36 @@
             // Configure the Cell author
             UILabel *Title = (UILabel *)[cell.contentView viewWithTag:10];
             NSString *strTitle = [FanActuHTTPRequest getParameter:@"nom" fromArticles:universList withIndex:indexPath.row];
-            [Title setText:strTitle];
+            [Title setText:[strTitle uppercaseString]];
             
-            if(isNotificationScreen) {
-                // Configure the Cell title
-                UISwitch *sw = (UISwitch *)[cell.contentView viewWithTag:11];
-                NSNumber *state = [FanActuHTTPRequest getNumberParameter:@"level" fromArticles:universList withIndex:indexPath.row];
-                [sw setOn:([state integerValue] == 1)];
-            }
+            // Configure the article count
+            UILabel *articleCount = (UILabel *)[cell.contentView viewWithTag:11];
+            NSString *strArticleCount = [NSString stringWithFormat:@"%@ ARTICLES",[FanActuHTTPRequest getParameter:@"articles" fromArticles:universList withIndex:indexPath.row]];
+            [articleCount setText:[strArticleCount uppercaseString]];
         }
     }
 
     return cell;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(section == 0)
-        return 1;
-    else {
-        NSArray *universList = [Globals getUnivers];
-        return [universList count];
+/*
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(!isNotificationScreen && (indexPath.section == 1)){
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSString *uN = [(UILabel*)[cell.contentView viewWithTag:10] text];
+        NSArray *univers = [Globals getUnivers];
+        for(NSDictionary *u in univers) {
+            NSString *universName = [[u objectForKey:@"nom"] uppercaseString];
+            if(universName) {
+                if([universName compare:uN] == NSOrderedSame){
+                    selectedIdUnivers = [u objectForKey:@"idUnivers"];
+                    NSLog(@"Matched %@",selectedIdUnivers);
+                }
+            }
+        }
     }
 }
+ */
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -154,9 +239,26 @@
 
 
 #pragma mark - Navigation
-/*
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    NSLog(@"Make the HTTP Request to update the server notification side");
+    NSLog(@"This is a segue %@",segue.identifier);
+    if(segue.identifier){
+        if([segue.identifier compare:@"segue1"] == NSOrderedSame) {
+            NSLog(@"caca");
+            ArticleListViewController *avc = (ArticleListViewController*)segue.destinationViewController;
+            UITableViewCell *cell = (UITableViewCell*) sender;
+            NSString *uN = [(UILabel*)[cell.contentView viewWithTag:10] text];
+            NSArray *univers = [Globals getUnivers];
+            for(NSDictionary *u in univers) {
+                NSString *universName = [[u objectForKey:@"nom"] uppercaseString];
+                if(universName) {
+                    if([universName compare:uN] == NSOrderedSame){
+                        [avc setIdUnivers:[u objectForKey:@"idUnivers"]];
+                        NSLog(@"Matched %@",[u objectForKey:@"idUnivers"]);
+                    }
+                }
+            }
+        }
+    }
 }
-*/
+
 @end

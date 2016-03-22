@@ -29,6 +29,8 @@ static NSString *universUpdateURN = @"univers/update";
         NSLog(@"%@ - %@",url,postString);
         [request setHTTPMethod:@"POST"];
         [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
+    } else {
+        NSLog(@"%@",url);
     }
     [[session dataTaskWithRequest:request completionHandler: completionBlock] resume];
 }
@@ -50,7 +52,7 @@ static NSString *universUpdateURN = @"univers/update";
     // Compose Url for requesting the ArticlesList
     NSString *url = [NSString stringWithFormat:@"%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],articlesListURN];
     // Compose PostString
-    NSString *postString = [NSString stringWithFormat:@"k=%@",keywords];
+    NSString *postString = [NSString stringWithFormat:@"k=%@&newSection=1",keywords];
     // Do the request
     [FanActuHTTPRequest request:url withPostString:postString andCompletionBlock:completionBlock];
 }
@@ -71,7 +73,7 @@ static NSString *universUpdateURN = @"univers/update";
 
 + (void)updateUniversWithId:(NSString*) idUnivers andLevel:(NSNumber*) level andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
     // Compose Url for requesting the Univers
-    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],universUpdateURN];
+    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],universUpdateURN,idUnivers,level];
     // Do the request
     [FanActuHTTPRequest request:url withPostString:nil andCompletionBlock:completionBlock];
 }

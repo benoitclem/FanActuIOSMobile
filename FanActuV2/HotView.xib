@@ -8,9 +8,6 @@
         <mutableArray key="FugazOne-Regular.otf">
             <string>FugazOne-Regular</string>
         </mutableArray>
-        <mutableArray key="Montserrat-Light.otf">
-            <string>Montserrat-Light</string>
-        </mutableArray>
         <mutableArray key="RobotoCondensed-Bold.otf">
             <string>RobotoCondensed-Bold</string>
         </mutableArray>
@@ -25,12 +22,12 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2YI-1f-s2a">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="255"/>
                 </imageView>
-                <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i2r-xW-gee">
+                <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i2r-xW-gee" userLabel="overlay">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="255"/>
                     <color key="backgroundColor" red="0.098039215686274508" green="0.23921568627450979" blue="0.27843137254901962" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" tag="10" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CATEGORY" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bea-TG-67T" customClass="UICategoryLabel">
-                    <rect key="frame" x="39" y="126" width="62" height="20"/>
+                <label opaque="NO" userInteractionEnabled="NO" tag="10" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="CATEGORY" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bea-TG-67T" customClass="UICategoryLabel">
+                    <rect key="frame" x="39" y="151" width="62" height="20"/>
                     <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="MU7-eh-R4x"/>
@@ -43,82 +40,47 @@
                     </variation>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" tag="11" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATMAN V SUPERMAN: UNE EPIQUE BANDE ANONCE FINALE" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ogo-DR-Ghu">
-                    <rect key="frame" x="39" y="149" width="321" height="56"/>
+                    <rect key="frame" x="39" y="172" width="321" height="56"/>
                     <fontDescription key="fontDescription" name="RobotoCondensed-Bold" family="Roboto Condensed" pointSize="21"/>
                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" tag="12" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Par COBAIN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ri0-8V-l8M">
-                    <rect key="frame" x="60" y="203" width="300" height="20"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="20" id="Zcm-QA-jOW"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" name="Montserrat-Light" family="Montserrat" pointSize="13"/>
-                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="horloge.png" translatesAutoresizingMaskIntoConstraints="NO" id="FOa-QD-TZM">
-                    <rect key="frame" x="39" y="207" width="13" height="13"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="13" id="IC4-Hk-gfC"/>
-                        <constraint firstAttribute="width" constant="13" id="QXl-Cz-ZBO"/>
-                        <constraint firstAttribute="height" constant="13" id="XRZ-0V-fDD"/>
-                        <constraint firstAttribute="width" constant="13" id="lC7-fZ-Euq"/>
-                    </constraints>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="XRZ-0V-fDD"/>
-                            <exclude reference="lC7-fZ-Euq"/>
-                        </mask>
-                    </variation>
-                    <variation key="widthClass=compact" misplaced="YES">
-                        <rect key="frame" x="150" y="49" width="13" height="13"/>
-                        <mask key="constraints">
-                            <include reference="XRZ-0V-fDD"/>
-                            <include reference="lC7-fZ-Euq"/>
-                        </mask>
-                    </variation>
-                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tzp-nr-DG3">
+                    <rect key="frame" x="0.0" y="0.0" width="400" height="255"/>
+                    <connections>
+                        <action selector="SelectedView:" destination="iN0-l3-epB" eventType="touchUpInside" id="mdV-gr-f00"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.062745098040000002" green="0.14117647059999999" blue="0.1647058824" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
+                <constraint firstItem="tzp-nr-DG3" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="00g-jH-re5"/>
+                <constraint firstAttribute="bottom" secondItem="tzp-nr-DG3" secondAttribute="bottom" id="0Df-bp-ioj"/>
                 <constraint firstAttribute="bottom" secondItem="2YI-1f-s2a" secondAttribute="bottom" id="3Qi-Q1-FOa"/>
                 <constraint firstItem="bea-TG-67T" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="39" id="4Nt-ig-vNi"/>
-                <constraint firstItem="ri0-8V-l8M" firstAttribute="top" secondItem="Ogo-DR-Ghu" secondAttribute="bottom" constant="-2" id="6pw-K8-4K7"/>
-                <constraint firstItem="ri0-8V-l8M" firstAttribute="leading" secondItem="FOa-QD-TZM" secondAttribute="trailing" constant="8" id="96m-f0-8UG"/>
                 <constraint firstAttribute="trailing" secondItem="i2r-xW-gee" secondAttribute="trailing" id="Fuu-MJ-yyC"/>
-                <constraint firstAttribute="trailing" secondItem="ri0-8V-l8M" secondAttribute="trailing" constant="40" id="GOx-z8-KXb"/>
-                <constraint firstAttribute="bottom" secondItem="FOa-QD-TZM" secondAttribute="bottom" constant="35" id="McY-f6-UsT"/>
-                <constraint firstItem="FOa-QD-TZM" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="39" id="SWo-g7-874"/>
-                <constraint firstAttribute="bottom" secondItem="ri0-8V-l8M" secondAttribute="bottom" constant="32" id="U9e-XO-R5k"/>
                 <constraint firstItem="i2r-xW-gee" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="WEC-3W-Af2"/>
                 <constraint firstAttribute="trailing" secondItem="2YI-1f-s2a" secondAttribute="trailing" id="XMe-gr-2v6"/>
                 <constraint firstItem="2YI-1f-s2a" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Xog-Z9-4Lm"/>
+                <constraint firstItem="tzp-nr-DG3" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Yhl-rH-4zD"/>
                 <constraint firstItem="Ogo-DR-Ghu" firstAttribute="top" secondItem="bea-TG-67T" secondAttribute="bottom" constant="3" id="als-pD-HME"/>
                 <constraint firstItem="i2r-xW-gee" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="cBw-Sk-gaE"/>
                 <constraint firstAttribute="trailing" secondItem="Ogo-DR-Ghu" secondAttribute="trailing" constant="40" id="cF5-0E-6GN"/>
+                <constraint firstAttribute="trailing" secondItem="tzp-nr-DG3" secondAttribute="trailing" id="ifI-4n-Yc1"/>
                 <constraint firstItem="Ogo-DR-Ghu" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="39" id="q0A-Xr-xRI"/>
                 <constraint firstAttribute="bottom" secondItem="i2r-xW-gee" secondAttribute="bottom" id="qFk-dY-fgN"/>
-                <constraint firstItem="ri0-8V-l8M" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="39" id="ucl-tR-gh8"/>
+                <constraint firstAttribute="bottom" secondItem="Ogo-DR-Ghu" secondAttribute="bottom" constant="27" id="uJT-Z5-b3D"/>
                 <constraint firstItem="2YI-1f-s2a" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="yBS-Hy-wSD"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <variation key="default">
-                <mask key="constraints">
-                    <exclude reference="ucl-tR-gh8"/>
-                </mask>
-            </variation>
             <connections>
+                <outlet property="SensitiveTouch" destination="tzp-nr-DG3" id="1CR-Ef-QWZ"/>
                 <outlet property="Title" destination="Ogo-DR-Ghu" id="KQa-cg-tdw"/>
-                <outlet property="WhenWho" destination="ri0-8V-l8M" id="eR7-E5-UrJ"/>
                 <outlet property="category" destination="bea-TG-67T" id="tRX-Lt-Ize"/>
-                <outlet property="colorOverlay" destination="i2r-xW-gee" id="Ieq-c7-jfG"/>
+                <outlet property="colorOverlay" destination="i2r-xW-gee" id="2s3-bS-VFe"/>
                 <outlet property="image" destination="2YI-1f-s2a" id="NYh-DQ-kFl"/>
             </connections>
             <point key="canvasLocation" x="244" y="-117.5"/>
         </view>
     </objects>
-    <resources>
-        <image name="horloge.png" width="19" height="19"/>
-    </resources>
 </document>

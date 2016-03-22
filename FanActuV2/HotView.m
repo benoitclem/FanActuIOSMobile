@@ -10,6 +10,19 @@
 
 @implementation HotView
 
+- (void) setPublicationId:(NSString*) pubId {
+    publicationId = [NSString stringWithString:pubId];
+}
+
+- (void) setCallBack:(ArticleListViewController*) lvc{
+    vc = lvc;
+}
+
+- (IBAction)SelectedView:(id)sender {
+    NSLog(@"Touched up inside: %@",publicationId);
+    [vc HotTapped:publicationId];
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

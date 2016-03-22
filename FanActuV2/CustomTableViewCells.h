@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "TTTAttributedLabel.h"
 #import "UICategoryLabel.h"
+#import "UIButtonWithData.h"
 
 // ARTICLE
 
@@ -59,6 +60,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *Title;
 @property (weak, nonatomic) IBOutlet UILabel *WhoWhen;
 @property (weak, nonatomic) IBOutlet UIImageView *image;
+@property (weak, nonatomic) IBOutlet UIButtonWithData *SensitiveOverlay;
 
 @end
 

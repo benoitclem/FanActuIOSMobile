@@ -21,6 +21,8 @@
 		F525B5EE1C8F2CD10035A18E /* flechejaune.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5EB1C8F2CD10035A18E /* flechejaune.png */; };
 		F525B5EF1C8F2CD10035A18E /* icône fermer.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5EC1C8F2CD10035A18E /* icône fermer.png */; };
 		F525B5F01C8F2CD10035A18E /* icône recherche big.png in Resources */ = {isa = PBXBuildFile; fileRef = F525B5ED1C8F2CD10035A18E /* icône recherche big.png */; };
+		F532F5B21CA0339700EF4AA2 /* flèche retour.png in Resources */ = {isa = PBXBuildFile; fileRef = F532F5B11CA0339700EF4AA2 /* flèche retour.png */; };
+		F532F5B51CA15A3600EF4AA2 /* UIButtonWithData.m in Sources */ = {isa = PBXBuildFile; fileRef = F532F5B41CA15A3600EF4AA2 /* UIButtonWithData.m */; };
 		F5412C0D1C986E1600033240 /* BB-8menu6p.png in Resources */ = {isa = PBXBuildFile; fileRef = F5412C0C1C986E1600033240 /* BB-8menu6p.png */; };
 		F5412C131C9958AF00033240 /* SplashScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5412C121C9958AF00033240 /* SplashScreenViewController.m */; };
 		F5412C1C1C99925400033240 /* articleFb.png in Resources */ = {isa = PBXBuildFile; fileRef = F5412C141C99925400033240 /* articleFb.png */; };
@@ -56,6 +58,7 @@
 		F581E5061C89C567006C811F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F581E5051C89C567006C811F /* CoreGraphics.framework */; };
 		F5A1D0601C9333910053E178 /* UICategoryLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A1D05F1C9333910053E178 /* UICategoryLabel.m */; };
 		F5C8F5D11C9B189300D4C69B /* placeholderImg.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5C8F5D01C9B189300D4C69B /* placeholderImg.jpg */; };
+		F5C8F5D41C9C474900D4C69B /* UISwitchWithData.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C8F5D31C9C474900D4C69B /* UISwitchWithData.m */; };
 		F5CEFB4D1C8D9AA900EB6EF5 /* batvssuper.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB421C8D9AA900EB6EF5 /* batvssuper.jpg */; };
 		F5CEFB4E1C8D9AA900EB6EF5 /* bb8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB431C8D9AA900EB6EF5 /* bb8.jpg */; };
 		F5CEFB4F1C8D9AA900EB6EF5 /* sw.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F5CEFB441C8D9AA900EB6EF5 /* sw.jpg */; };
@@ -119,6 +122,9 @@
 		F525B5EB1C8F2CD10035A18E /* flechejaune.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flechejaune.png; sourceTree = "<group>"; };
 		F525B5EC1C8F2CD10035A18E /* icône fermer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône fermer.png"; sourceTree = "<group>"; };
 		F525B5ED1C8F2CD10035A18E /* icône recherche big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icône recherche big.png"; sourceTree = "<group>"; };
+		F532F5B11CA0339700EF4AA2 /* flèche retour.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "flèche retour.png"; sourceTree = "<group>"; };
+		F532F5B31CA15A3600EF4AA2 /* UIButtonWithData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonWithData.h; sourceTree = "<group>"; };
+		F532F5B41CA15A3600EF4AA2 /* UIButtonWithData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonWithData.m; sourceTree = "<group>"; };
 		F5412C0C1C986E1600033240 /* BB-8menu6p.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BB-8menu6p.png"; sourceTree = "<group>"; };
 		F5412C111C9958AF00033240 /* SplashScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashScreenViewController.h; sourceTree = "<group>"; };
 		F5412C121C9958AF00033240 /* SplashScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenViewController.m; sourceTree = "<group>"; };
@@ -169,6 +175,8 @@
 		F5A1D05E1C9333910053E178 /* UICategoryLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICategoryLabel.h; sourceTree = "<group>"; };
 		F5A1D05F1C9333910053E178 /* UICategoryLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICategoryLabel.m; sourceTree = "<group>"; };
 		F5C8F5D01C9B189300D4C69B /* placeholderImg.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = placeholderImg.jpg; sourceTree = "<group>"; };
+		F5C8F5D21C9C474900D4C69B /* UISwitchWithData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UISwitchWithData.h; path = ../UISwitchWithData.h; sourceTree = "<group>"; };
+		F5C8F5D31C9C474900D4C69B /* UISwitchWithData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UISwitchWithData.m; path = ../UISwitchWithData.m; sourceTree = "<group>"; };
 		F5CEFB421C8D9AA900EB6EF5 /* batvssuper.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = batvssuper.jpg; sourceTree = "<group>"; };
 		F5CEFB431C8D9AA900EB6EF5 /* bb8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bb8.jpg; sourceTree = "<group>"; };
 		F5CEFB441C8D9AA900EB6EF5 /* sw.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sw.jpg; sourceTree = "<group>"; };
@@ -284,6 +292,10 @@
 				F581E4C81C89A76D006C811F /* AppDelegate.h */,
 				F5412C111C9958AF00033240 /* SplashScreenViewController.h */,
 				F5412C121C9958AF00033240 /* SplashScreenViewController.m */,
+				F5C8F5D21C9C474900D4C69B /* UISwitchWithData.h */,
+				F5C8F5D31C9C474900D4C69B /* UISwitchWithData.m */,
+				F532F5B31CA15A3600EF4AA2 /* UIButtonWithData.h */,
+				F532F5B41CA15A3600EF4AA2 /* UIButtonWithData.m */,
 				F581E4FB1C89A9BE006C811F /* ArticleListViewController.h */,
 				F581E4FC1C89A9BE006C811F /* ArticleListViewController.m */,
 				F525B5DC1C8DFEFE0035A18E /* ArticleViewController.h */,
@@ -340,6 +352,7 @@
 		F5CEFB411C8D9AA900EB6EF5 /* Ressources */ = {
 			isa = PBXGroup;
 			children = (
+				F532F5B11CA0339700EF4AA2 /* flèche retour.png */,
 				F5C8F5D01C9B189300D4C69B /* placeholderImg.jpg */,
 				F5412C271C99E13900033240 /* horloge.png */,
 				F5412C281C99E13900033240 /* visuelUnivers.jpg */,
@@ -544,6 +557,7 @@
 				F5CEFB581C8DA5AC00EB6EF5 /* HotView.xib in Resources */,
 				F5412C2A1C99E13900033240 /* visuelUnivers.jpg in Resources */,
 				F5412C231C99925400033240 /* menuTwit.png in Resources */,
+				F532F5B21CA0339700EF4AA2 /* flèche retour.png in Resources */,
 				F5412C291C99E13900033240 /* horloge.png in Resources */,
 				F5412C211C99925400033240 /* menuG+.png in Resources */,
 				F525B5E91C8EFD300035A18E /* icône recherche.png in Resources */,
@@ -605,6 +619,7 @@
 				F581E4D31C89A76D006C811F /* FanActuV2.xcdatamodeld in Sources */,
 				F5EF08551C8A22B40046B353 /* UIButton+WebCache.m in Sources */,
 				F5EF084D1C8A22B40046B353 /* NSData+ImageContentType.m in Sources */,
+				F532F5B51CA15A3600EF4AA2 /* UIButtonWithData.m in Sources */,
 				F5CEFB521C8D9AA900EB6EF5 /* SwipeView.m in Sources */,
 				F56D52621C98534400D92A64 /* Globals.m in Sources */,
 				F5EF08541C8A22B40046B353 /* SDWebImagePrefetcher.m in Sources */,
@@ -622,6 +637,7 @@
 				F581E4C71C89A76D006C811F /* main.m in Sources */,
 				F525B5D41C8DD23C0035A18E /* MenuViewController.m in Sources */,
 				F525B5E41C8EBA790035A18E /* CustomTableViewCells.m in Sources */,
+				F5C8F5D41C9C474900D4C69B /* UISwitchWithData.m in Sources */,
 				F581E4FD1C89A9BE006C811F /* ArticleListViewController.m in Sources */,
 				F5EF08571C8A22B40046B353 /* UIImage+MultiFormat.m in Sources */,
 				F5EF08591C8A22B40046B353 /* UIImageView+HighlightedWebCache.m in Sources */,

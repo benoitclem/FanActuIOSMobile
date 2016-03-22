@@ -9,6 +9,7 @@
 #import "ArticleListViewController.h"
 #import "ArticleViewController.h"
 #import "MenuViewController.h"
+#import "UniversListViewController.h"
 #import "SearchViewController.h"
 #import "FanActuHTTPRequest.h"
 #import "UIImageView+WebCache.h"
@@ -24,40 +25,90 @@
 
 @implementation ArticleListViewController
 
+// Basic unwinding
+
 - (IBAction)myUnwindAction:(UIStoryboardSegue *)unwindSegue{
     NSLog(@"Dismiss Screen");
 }
 
-- (IBAction)selectedRow:(UIStoryboardSegue*)selectedSegue{
+- (IBAction)selectedUnivers:(UIStoryboardSegue*)selectedSegue{
+    NSLog(@"Do network request");
+    NSLog(@"Selected Universe %ld",[idUnivers integerValue]);
+    NSString *encodedDate = [Globals getEncodedDate:nil];
+    loading = true;
+    [FanActuHTTPRequest requestArticlesWithCategory:@0
+                                            univers:idUnivers
+                                               date:encodedDate
+                                 andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+                             NSMutableDictionary * all = [NSJSONSerialization
+                                                          JSONObjectWithData:data
+                                                          options:NSJSONReadingMutableContainers
+                                                          error:&error];
+                             
+                            // NSLog(@"RAW %@",all);
+                             // handle response
+                             NSMutableArray *hl = [all objectForKey:@"hot"];
+                             NSLog(@"Hot %@ ", hl);
+                             [Globals setHots:hl];
+                             hotList = hl;
+                             
+                             NSMutableArray *actuList = [all objectForKey:@"actus"];
+                             NSLog(@"Actus %@ ", actuList);
+                             [Globals setActus:actuList];
+                             actus = actuList;
+                             
+                             NSMutableArray *topsWeek = [all objectForKey:@"topWeek"];
+                             NSLog(@"week %@ ", topsWeek);
+                             [Globals setTopsWeek:topsWeek];
+                             topWeek = topsWeek;
+                             
+                             NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
+                             NSLog(@"month %@ ", topsMonth);
+                             [Globals setTopsMonth:topsMonth];
+                             topMonth = topsWeek;
+                             
+                             isSearchResult = NO;
+                             [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone: NO];
+                             //[self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+                             NSLog(@"ReloadedTableView");
+                             loading = false;
+                             
+                         }];
+
+}
+
+- (IBAction)selectedCategory:(UIStoryboardSegue*)selectedSegue{
     MenuViewController *menuVc = (MenuViewController*)selectedSegue.sourceViewController;
     NSIndexPath *ip = [menuVc.menuTable indexPathForSelectedRow];
     NSLog(@"Selected %ld",(long)ip.row);
     // Allow the the system to load the good news feed when scrolling
     long oldIdCategory = [idCategory integerValue];
     switch(ip.row){
+        default:
         case 1:
-            idCategory = @2; // Cinéma
+            idCategory = @0; // Toutes
             break;
         case 2:
-            idCategory = @1; // Animation
+            idCategory = @2; // Cinéma
             break;
         case 3:
-            idCategory = @4; // Serie TV
+            idCategory = @1; // Animation
             break;
         case 4:
-            idCategory = @3; // Jeux Video
+            idCategory = @4; // Serie TV
             break;
         case 5:
-            idCategory = @5; // Inclassable
+            idCategory = @3; // Jeux Video
             break;
-        default:
-            idCategory = @0; // ACTU
+        case 6:
+            idCategory = @5; // Inclassable
             break;
     }
     if([idCategory integerValue] != oldIdCategory) {
         // Need to reflesh the feed
         NSLog(@"Need to refresh the feed");
         NSString *encodedDate = [Globals getEncodedDate:nil];
+        loading = true;
         [FanActuHTTPRequest requestArticlesWithCategory:idCategory
                                                 univers:@0
                                                    date:encodedDate
@@ -86,9 +137,11 @@
                                          NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
                                          NSLog(@"month %@ ", topsMonth);
                                          [Globals setTopsMonth:topsMonth];
-                                         topMonth = topsWeek;
+                                         topMonth = topsMonth;
                                          
-                                         [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+                                         isSearchResult = NO;
+                                         [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone: NO];
+                                         //[self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                                          NSLog(@"ReloadedTableView");
                                          loading = false;
                                          
@@ -100,19 +153,76 @@
     SearchViewController *searchVc = (SearchViewController*)searchSegue.sourceViewController;
     NSString *srchTxt = [searchVc.SearchTextField text];
     NSLog(@"Search %@",srchTxt);
+    loading = true;
+    [FanActuHTTPRequest requestArticlesWithKeyWords:srchTxt
+                                 andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+                                     NSMutableDictionary * all = [NSJSONSerialization
+                                                                  JSONObjectWithData:data
+                                                                  options:NSJSONReadingMutableContainers
+                                                                  error:&error];
+                                     
+                                     NSLog(@"search result %@",all);
+                                     
+                                     // handle response
+                                     NSMutableArray *hl = [all objectForKey:@"hot"];
+                                     NSLog(@"Hot %@ ", hl);
+                                     [Globals setHots:hl];
+                                     hotList = hl;
+                                     
+                                     NSMutableArray *actuList = [all objectForKey:@"actus"];
+                                     NSLog(@"Actus %@ ", actuList);
+                                     [Globals setActus:actuList];
+                                     actus = actuList;
+                                     
+                                     NSMutableArray *topsWeek = [all objectForKey:@"topWeek"];
+                                     NSLog(@"week %@ ", topsWeek);
+                                     [Globals setTopsWeek:topsWeek];
+                                     topWeek = topsWeek;
+                                     
+                                     NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
+                                     NSLog(@"month %@ ", topsMonth);
+                                     [Globals setTopsMonth:topsMonth];
+                                     topMonth = topsWeek;
+                                      
+                                     isSearchResult = YES;
+                                     [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone: NO];
+                                     //[self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+                                     NSLog(@"ReloadedTableView");
+                                    
+                                     loading = false;
+
+                                 }];
+}
+
+- (void) reloadAndRewind{
+    [self.ArticleTableView reloadData];
+    [self.ArticleTableView setContentOffset:CGPointZero animated:YES];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle{
     return UIStatusBarStyleLightContent;
 }
 
+- (void) setIdUnivers:(NSNumber*) lIdUnivers{
+    idUnivers = lIdUnivers;
+}
+
+- (void) HotTapped:(NSString*) n{
+    isHotTapped = YES;
+    hotIdPub = [NSString stringWithString:n];
+    NSLog(@"YAAAA");
+    [self performSegueWithIdentifier: @"toArticle" sender: self];
+}
+
 - (void)viewDidLoad {
     hotPageControl = nil;
     UIImage *splashImage;
-    self.SplashScreen.image = splashImage;
+    //self.SplashScreen.image = splashImage;
     [super viewDidLoad];
     loading = false;
     buttonSelected = 1;
+    isSearchResult = FALSE;
+    isHotTapped = FALSE;
     HotDisplayedHeight = 255.0;
     SelectedColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
     UnselectedColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.3];
@@ -155,6 +265,11 @@
 
     //NSLog(@"Showing %ld",(long)index);
     
+    // Set publication Id
+    //NSLog(@"get PubId %@",[FanActuHTTPRequest getParameter:@"idPublication" fromArticles:hotList withIndex:index]);
+    [hotView setPublicationId:[FanActuHTTPRequest getParameter:@"idPublication" fromArticles:hotList withIndex:index]];
+    [hotView setCallBack:self];
+    
     // Image
     NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"visuel" fromArticles:hotList withIndex:index];
     //NSLog(@"%@",strImgUrl);
@@ -165,8 +280,8 @@
     [hotView.category setText:[strCategory uppercaseString]];
     
     // Configure the Cell author
-    NSString *strAutor = [FanActuHTTPRequest getParameter:@"author" fromArticles:hotList withIndex:index];
-    [hotView.WhenWho setText:strAutor];
+    //NSString *strAutor = [FanActuHTTPRequest getParameter:@"author" fromArticles:hotList withIndex:index];
+    //[hotView.WhenWho setText:strAutor];
     
     // Configure the Cell title
     NSString *strTitle = [FanActuHTTPRequest getParameter:@"titre" fromArticles:hotList withIndex:index];
@@ -284,7 +399,11 @@
         return 1;
     else {
         NSMutableArray *articleList = [self getDisplayedArticleList];
-        return [articleList count] + 1 ;
+        if(isSearchResult) {
+            return [articleList count]; // when this is a search result don't add the activity indicator
+        } else {
+            return [articleList count] + 1;
+        }
     }
 }
 
@@ -318,7 +437,7 @@
     }
     if(oldButtonSelected != buttonSelected) {
         //NSLog(@"B1 RELOAD");
-        // This is not very clean, we need to reload only the section header
+        // This is not very clean, we need to reload only the section headerTouch
         [self.ArticleTableView reloadData];
     }
 }
@@ -412,30 +531,32 @@
         self.ArticleTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     }
     
-    // loading next view
-    if ((actualPosition >= contentHeight)&& (!loading)) {
-        loading = true;
-        NSLog(@"Loading next Data idCategory(%ld)",[idCategory integerValue]);
-        // Get The date of last requested article
-        NSMutableArray *articleList = [self getDisplayedArticleList];
-        NSDictionary *lastArticle = [articleList objectAtIndex:[articleList count] - 1];
-        NSString *dateString = [lastArticle objectForKey:@"dateTime"];
-        dateString = [Globals getEncodedDate:dateString];
-        NSLog(@"Last Arcticle %@",dateString);
-        [FanActuHTTPRequest requestArticlesWithCategory:idCategory
-                                                univers:@0
-                                                   date:dateString
-                                     andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
-               // handle response
-               [articleList addObjectsFromArray: [(NSMutableDictionary*)[NSJSONSerialization
-                                                     JSONObjectWithData:data
-                                                     options:NSJSONReadingMutableContainers
-                                                     error:&error] objectForKey:@"actus"]];
-               //NSLog(@" %@ ", articleList);
-               [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-               NSLog(@"ReloadedTableView");
-               loading = false;
-           }];
+    if(!isSearchResult) {
+        // loading next view
+        if ((actualPosition >= contentHeight)&& (!loading)) {
+            loading = true;
+            NSLog(@"Loading next Data idCategory(%ld)",[idCategory integerValue]);
+            // Get The date of last requested article
+            NSMutableArray *articleList = [self getDisplayedArticleList];
+            NSDictionary *lastArticle = [articleList objectAtIndex:[articleList count] - 1];
+            NSString *dateString = [lastArticle objectForKey:@"dateTime"];
+            dateString = [Globals getEncodedDate:dateString];
+            NSLog(@"Last Arcticle %@",dateString);
+            [FanActuHTTPRequest requestArticlesWithCategory:idCategory
+                                                    univers:@0
+                                                       date:dateString
+                                         andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
+                   // handle response
+                   [articleList addObjectsFromArray: [(NSMutableDictionary*)[NSJSONSerialization
+                                                         JSONObjectWithData:data
+                                                         options:NSJSONReadingMutableContainers
+                                                         error:&error] objectForKey:@"actus"]];
+                   //NSLog(@" %@ ", articleList);
+                   [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+                   NSLog(@"ReloadedTableView");
+                   loading = false;
+               }];
+        }
     }
     
     // Do the nice resizing stuffs for carousel
@@ -464,12 +585,19 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     NSLog(@"Segue %@",segue.identifier);
     if([segue.identifier compare:@"toArticle"] == NSOrderedSame) {
-        // Pass the publication Id of selected article
-        NSIndexPath *selected = [self.ArticleTableView indexPathForSelectedRow];
-        NSMutableArray *articleList = [self getDisplayedArticleList];
-        NSDictionary *article = [articleList objectAtIndex:selected.row];
+        NSString *destPubId;
+        if(!isHotTapped) {
+            // Pass the publication Id of selected article
+            NSIndexPath *selected = [self.ArticleTableView indexPathForSelectedRow];
+            NSMutableArray *articleList = [self getDisplayedArticleList];
+            NSDictionary *article = [articleList objectAtIndex:selected.row];
+            destPubId = [NSString stringWithFormat:@"%ld",[[article objectForKey:@"idPublication"] integerValue]];
+        } else {
+            destPubId = hotIdPub;
+            isHotTapped = NO;
+        }
         ArticleViewController *avc = (ArticleViewController*) segue.destinationViewController;
-        [avc setPublicationId:[NSString stringWithFormat:@"%ld",[[article objectForKey:@"idPublication"] integerValue]]];
+        [avc setPublicationId:destPubId];
     }
 }
 

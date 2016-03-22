@@ -34,7 +34,6 @@
 
 
 - (void)drawTextInRect:(CGRect)rect {
-    NSLog(@"yeag This is called");
     UIEdgeInsets insets = {0, 5, 0, 7};
     [super drawTextInRect:UIEdgeInsetsInsetRect(rect, insets)];
 }

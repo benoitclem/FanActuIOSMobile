@@ -9,7 +9,7 @@
 #import "MenuViewController.h"
 #import "UniversListViewController.h"
 
-#define N_ACTUALITE 5
+#define N_ACTUALITE 6
 #define N_UNIVERS 3
 
 @interface MenuViewController ()
@@ -66,18 +66,21 @@
             UILabel *rowLabel = (UILabel *)[cell.contentView viewWithTag:10];
             switch(indexPath.row) {
                 case 1:
-                    rowLabel.text = @"CINÉMA";
+                    rowLabel.text = @"TOUTES";
                     break;
                 case 2:
-                    rowLabel.text = @"ANIMATION";
+                    rowLabel.text = @"CINÉMA";
                     break;
                 case 3:
-                    rowLabel.text = @"SÉRIES TV";
+                    rowLabel.text = @"ANIMATION";
                     break;
                 case 4:
-                    rowLabel.text = @"JEUX VIDÉO";
+                    rowLabel.text = @"SÉRIES TV";
                     break;
                 case 5:
+                    rowLabel.text = @"JEUX VIDÉO";
+                    break;
+                case 6:
                     rowLabel.text = @"INCLASSABLE";
                     break;
                 default:

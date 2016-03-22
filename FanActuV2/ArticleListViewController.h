@@ -30,20 +30,30 @@
     UIColor *UnselectedColor;
 
     // States
+    BOOL isSearchResult;
+    BOOL isHotTapped;
+    NSString *hotIdPub;
     int buttonSelected;
     BOOL loading;
     NSNumber *idCategory;
+    NSNumber *idUnivers;
 }
+
+- (void) reloadAndRewind;
 
 @property (weak, nonatomic) IBOutlet UITableView *ArticleTableView;
 @property (weak, nonatomic) IBOutlet UIView *NavBar;
-@property (weak, nonatomic) IBOutlet UIImageView *SplashScreen;
-@property (weak, nonatomic) IBOutlet UIImageView *SplashLogo
+//@property (weak, nonatomic) IBOutlet UIImageView *SplashScreen;
+//@property (weak, nonatomic) IBOutlet UIImageView *SplashLogo
 ;
 
 - (IBAction)myUnwindAction:(UIStoryboardSegue*)unwindSegue;
-- (IBAction)selectedRow:(UIStoryboardSegue*)selectedSegue;
+- (IBAction)selectedCategory:(UIStoryboardSegue*)selectedSegue;
+- (IBAction)selectedUnivers:(UIStoryboardSegue*)selectedSegue;
 - (IBAction)search:(UIStoryboardSegue*)searchSegue;
+
+- (void) setIdUnivers:(NSNumber*) lIdUnivers;
+- (void) HotTapped:(NSString*) n;
 
 - (NSMutableArray*) getDisplayedArticleList;
 

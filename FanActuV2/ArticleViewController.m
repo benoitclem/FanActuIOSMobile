@@ -90,13 +90,13 @@
                                                                      options:0
                                                                     progress:^(NSInteger receivedSize, NSInteger expectedSize)
                                                                         {
-                                                                        NSLog(@"Loading image %@ - %ld/%ld",[bloc objectForKey:@"value"],receivedSize,expectedSize);
+                                                                        //NSLog(@"Loading image %@ - %ld/%ld",[bloc objectForKey:@"value"],receivedSize,expectedSize);
                                                                         }
                                                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageUrl) {
-                                                                       NSLog(@"Error %@",error);
+                                                                       //NSLog(@"Error %@",error);
                                                                        long n = [((NSNumber*)[bloc objectForKey:@"idBloc"]) integerValue];
                                                                        float ratio = image.size.width / image.size.height;
-                                                                       NSLog(@"Caching images %f",ratio);
+                                                                       //NSLog(@"Caching images %f",ratio);
                                                                             [imgRatiosCache setValue:[NSNumber numberWithFloat:ratio] forKey:[NSString stringWithFormat:@"%ld",n ]] ;
                                                                         }
                                                                     ];
@@ -146,6 +146,7 @@
                                                                     [NSNumber numberWithInt:8],@"ident",
                                                                     [article objectForKey:@"titre"],@"title",
                                                                     [article objectForKey:@"datePublication"],@"when",
+                                                                    [article objectForKey:@"idPublication"],@"idPub",
                                                                     [article objectForKey:@"auteur"],@"who",
                                                                     [article objectForKey:@"image"],@"photo",
                                                                     [article objectForKey:@"shares"],@"shares",nil];
@@ -220,7 +221,17 @@
         }
         case 1: {
             ShareCell *myCell = (ShareCell*)[tableView dequeueReusableCellWithIdentifier:@"Share" forIndexPath:indexPath];
-            NSString *shares = [[blockOfInterest objectForKey:@"shares"] stringValue];
+            NSNumber *nShares = [blockOfInterest objectForKey:@"shares"];
+            NSString *shares;
+            if([nShares integerValue]> 100000) {
+                shares = [NSString stringWithFormat:@"%.0fK",([nShares floatValue]/1000.0)];
+            } else if ([nShares integerValue]> 10000) {
+                shares = [NSString stringWithFormat:@"%.1fK",([nShares floatValue]/1000.0)];
+            } else if ([nShares integerValue]> 1000) {
+                shares = [NSString stringWithFormat:@"%.1fK",([nShares floatValue]/1000.0)];
+            } else {
+                shares = [NSString stringWithFormat:@"%ld",[nShares integerValue]];
+            }
             [myCell.shares setText:shares];
             cell = myCell;
             break;
@@ -241,9 +252,11 @@
             
             myCell.Text.attributedText = attString2;
             
+            //NSLog(@"attString2 %@",richText);
+            
             [attString2 enumerateAttribute:NSLinkAttributeName inRange:NSMakeRange(0, attString2.length) options:0 usingBlock:^(id value, NSRange range, BOOL *stop) {
                 if (value) {
-                    NSLog(@"value %d,%d - %@",range.location,range.length,value);
+                    NSLog(@"value %ld,%ld - %@",range.location,range.length,value);
                     [myCell.Text addLinkToURL:value withRange:range];
                 }
             }];
@@ -331,13 +344,26 @@
             NSString *title = (NSString *)[blockOfInterest objectForKey:@"title"];
             NSString *when = (NSString *)[blockOfInterest objectForKey:@"when"];
             NSString *who = (NSString *)[blockOfInterest objectForKey:@"who"];
-            NSString *shares = (NSString *)[blockOfInterest objectForKey:@"shares"];
+            NSString *idPub = (NSString *)[blockOfInterest objectForKey:@"idPub"];
+            NSNumber *nShares = [blockOfInterest objectForKey:@"shares"];
+            NSString *shares;
+            if([nShares integerValue]> 100000) {
+                shares = [NSString stringWithFormat:@"%.0fK",([nShares floatValue]/1000.0)];
+            } else if ([nShares integerValue]> 10000) {
+                shares = [NSString stringWithFormat:@"%.1fK",([nShares floatValue]/1000.0)];
+            } else if ([nShares integerValue]> 1000) {
+                shares = [NSString stringWithFormat:@"%.1fK",([nShares floatValue]/1000.0)];
+            } else {
+                shares = [NSString stringWithFormat:@"%ld",[nShares integerValue]];
+            }
             NSString *imgLink = (NSString *)[blockOfInterest objectForKey:@"photo"];
             [myCell.Title setText:[title uppercaseString]];
             [myCell.WhoWhen setText:[NSString stringWithFormat:@"%@ | par %@",when,[who uppercaseString]]];
             [myCell.Shares setText:shares];
             [myCell.image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
-
+            
+            [myCell.SensitiveOverlay setValue:idPub];
+            //[myCell.SensitiveOverlay addTarget:self action:@selector(wantMoreTouched:) forControlEvents:UIControlEventTouchUpInside];
             cell = myCell;
             break;
         }
@@ -420,19 +446,36 @@
 }
 
 /*
+- (void) wantMoreTouched:(id) sender {
+    UIButtonWithData *but = (UIButtonWithData*) sender;
+    NSString *idPub = [but getValue];
+    publicationId = idPub;
+    NSLog(@"WantMoreTouhed %@",idPub);
+    [self viewDidLoad];
+}
+*/
+
+/*
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return UITableViewAutomaticDimension;
 }
 */
 
-/*
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    NSLog(@"what %@",segue.identifier);
+    if([segue.identifier isEqualToString:@"toSelf"]) {
+        NSLog(@"what %@",segue.identifier);
+        UIButtonWithData *but = (UIButtonWithData*) sender;
+        NSString *idPub = [but getValue];
+        NSLog(@"WantMoreTouhed %@",idPub);
+        ArticleViewController *avc = (ArticleViewController*) segue.destinationViewController;
+        [avc setPublicationId:idPub];
+        // Get the new view controller using [segue destinationViewController].
+        // Pass the selected object to the new view controller.
+    }
 }
-*/
 
 @end
