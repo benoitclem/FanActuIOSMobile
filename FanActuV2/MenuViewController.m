@@ -22,6 +22,8 @@
     NSLog(@"Dismiss Screen UNIVERS");
 }
 
+
+
 - (UIStatusBarStyle)preferredStatusBarStyle{
     return UIStatusBarStyleLightContent;
 }
@@ -163,6 +165,11 @@
     } else if(((indexPath.section == 1)||(indexPath.section == 2)) && (indexPath.row == 0)) {
         NSLog(@"Clicked on Univers or Notification Stuff");
         [self performSegueWithIdentifier:@"segue0" sender:self];
+    } else if(indexPath.section == 3) {
+        NSString *subject = @"[IOS]%20Contact%20FanActu";
+        NSString *address = @"contact@fanactu.com";
+        NSURL *mainUrl = [NSURL URLWithString:[NSString stringWithFormat:@"mailto:%@?subject=%@", address, subject]];
+        [[UIApplication sharedApplication] openURL:mainUrl];
     }
 }
 
@@ -181,6 +188,48 @@
         [ulvc setNotificationScreen];
     }
 }
+- (IBAction)toFacebook:(id)sender {
+    NSURL *fbURL = [NSURL URLWithString:@"fb://profile/394632520682137"];
+    if ([[UIApplication sharedApplication] canOpenURL:fbURL]) {
+        [[UIApplication sharedApplication] openURL:fbURL];
+    } else {
+        NSURL *fbWebUrl = [NSURL URLWithString:@"https://www.facebook.com/fanactucom/?fref=ts"];
+        [[UIApplication sharedApplication] openURL:fbWebUrl];
+    }
+}
 
+- (IBAction)toTwitter:(id)sender {
+    NSURL *twitterURL = [NSURL URLWithString:@"twitter://user?screen_name=fanactucom"];
+    if ([[UIApplication sharedApplication] canOpenURL:twitterURL]) {
+        [[UIApplication sharedApplication] openURL:twitterURL];
+    } else {
+        NSURL *twitterWebUrl = [NSURL URLWithString:@"https://twitter.com/FanactuCom"];
+        [[UIApplication sharedApplication] openURL:twitterWebUrl];
+    }
+}
 
+- (IBAction)toGoogle:(id)sender {
+    NSURL *googlePlusWebUrl = [NSURL URLWithString:@"https://plus.google.com/+Fanactu/posts"];
+    [[UIApplication sharedApplication] openURL:googlePlusWebUrl];
+}
+
+- (IBAction)toInstagram:(id)sender {
+    NSURL *instagramURL = [NSURL URLWithString:@"instagram://user?username=fanactu"];
+    if ([[UIApplication sharedApplication] canOpenURL:instagramURL]) {
+        [[UIApplication sharedApplication] openURL:instagramURL];
+    } else {
+        NSURL *intragramWebUrl = [NSURL URLWithString:@"https://www.instagram.com/fanactu/"];
+        [[UIApplication sharedApplication] openURL:intragramWebUrl];
+    }
+}
+
+- (IBAction)toDailymotion:(id)sender {
+    NSURL *dailymotionURL = [NSURL URLWithString:@"dailymotion://fanactucom"];
+    if ([[UIApplication sharedApplication] canOpenURL:dailymotionURL]) {
+        [[UIApplication sharedApplication] openURL:dailymotionURL];
+    } else {
+        NSURL *dailymotionWebUrl = [NSURL URLWithString:@"http://www.dailymotion.com/fanactu"];
+        [[UIApplication sharedApplication] openURL:dailymotionWebUrl];
+    }
+}
 @end

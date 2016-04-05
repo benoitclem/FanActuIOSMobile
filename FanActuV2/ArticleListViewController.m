@@ -8,6 +8,7 @@
 
 #import "ArticleListViewController.h"
 #import "ArticleViewController.h"
+#import "CustomTableViewCells.h"
 #import "MenuViewController.h"
 #import "UniversListViewController.h"
 #import "SearchViewController.h"
@@ -36,7 +37,10 @@
     NSLog(@"Selected Universe %ld",[idUnivers integerValue]);
     NSString *encodedDate = [Globals getEncodedDate:nil];
     loading = true;
-    [FanActuHTTPRequest requestArticlesWithCategory:@0
+    noMoreResults = false;
+    // Select by universe drop the category stuffs
+    idCategory = @0;
+    [FanActuHTTPRequest requestArticlesWithCategory:idCategory
                                             univers:idUnivers
                                                date:encodedDate
                                  andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
@@ -48,7 +52,7 @@
                             // NSLog(@"RAW %@",all);
                              // handle response
                              NSMutableArray *hl = [all objectForKey:@"hot"];
-                             NSLog(@"Hot %@ ", hl);
+                             //NSLog(@"Hot %@ ", hl);
                              [Globals setHots:hl];
                              hotList = hl;
                              
@@ -58,21 +62,25 @@
                              actus = actuList;
                              
                              NSMutableArray *topsWeek = [all objectForKey:@"topWeek"];
-                             NSLog(@"week %@ ", topsWeek);
+                             //NSLog(@"week %@ ", topsWeek);
                              [Globals setTopsWeek:topsWeek];
                              topWeek = topsWeek;
                              
                              NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
-                             NSLog(@"month %@ ", topsMonth);
+                             //NSLog(@"month %@ ", topsMonth);
                              [Globals setTopsMonth:topsMonth];
                              topMonth = topsWeek;
                              
                              isSearchResult = NO;
+                            buttonSelected = 1;
                              [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone: NO];
                              //[self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                              NSLog(@"ReloadedTableView");
                              loading = false;
-                             
+                            
+                             // Set a non TRUE value to idCategory, it pushes the view to reload
+                             // corectly when goes from univers to all ACTUS
+                             idCategory = @-2;
                          }];
 
 }
@@ -104,13 +112,16 @@
             idCategory = @5; // Inclassable
             break;
     }
+    // Select by category drop the universe thing
+    idUnivers = @0;
+    noMoreResults = false;
     if([idCategory integerValue] != oldIdCategory) {
         // Need to reflesh the feed
         NSLog(@"Need to refresh the feed");
         NSString *encodedDate = [Globals getEncodedDate:nil];
         loading = true;
         [FanActuHTTPRequest requestArticlesWithCategory:idCategory
-                                                univers:@0
+                                                univers:idUnivers
                                                    date:encodedDate
                                      andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
                                          NSMutableDictionary * all = [NSJSONSerialization
@@ -120,30 +131,32 @@
                                          
                                          // handle response
                                          NSMutableArray *hl = [all objectForKey:@"hot"];
-                                         NSLog(@"Hot %@ ", hl);
+                                         //NSLog(@"Hot %@ ", hl);
                                          [Globals setHots:hl];
                                          hotList = hl;
                                          
                                          NSMutableArray *actuList = [all objectForKey:@"actus"];
-                                         NSLog(@"Actus %@ ", actuList);
+                                         //NSLog(@"Actus %@ ", actuList);
                                          [Globals setActus:actuList];
                                          actus = actuList;
                                          
                                          NSMutableArray *topsWeek = [all objectForKey:@"topWeek"];
-                                         NSLog(@"week %@ ", topsWeek);
+                                         //NSLog(@"week %@ ", topsWeek);
                                          [Globals setTopsWeek:topsWeek];
                                          topWeek = topsWeek;
                                          
                                          NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
-                                         NSLog(@"month %@ ", topsMonth);
+                                         //NSLog(@"month %@ ", topsMonth);
                                          [Globals setTopsMonth:topsMonth];
                                          topMonth = topsMonth;
                                          
                                          isSearchResult = NO;
+                                         buttonSelected = 1;
                                          [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone: NO];
                                          //[self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                                          NSLog(@"ReloadedTableView");
                                          loading = false;
+                                         
                                          
                                      }];
     }
@@ -161,42 +174,47 @@
                                                                   options:NSJSONReadingMutableContainers
                                                                   error:&error];
                                      
-                                     NSLog(@"search result %@",all);
+                                     //NSLog(@"search result %@",all);
                                      
                                      // handle response
                                      NSMutableArray *hl = [all objectForKey:@"hot"];
-                                     NSLog(@"Hot %@ ", hl);
+                                     //NSLog(@"Hot %@ ", hl);
                                      [Globals setHots:hl];
                                      hotList = hl;
                                      
                                      NSMutableArray *actuList = [all objectForKey:@"actus"];
-                                     NSLog(@"Actus %@ ", actuList);
+                                     //NSLog(@"Actus %@ ", actuList);
                                      [Globals setActus:actuList];
                                      actus = actuList;
                                      
                                      NSMutableArray *topsWeek = [all objectForKey:@"topWeek"];
-                                     NSLog(@"week %@ ", topsWeek);
+                                     //NSLog(@"week %@ ", topsWeek);
                                      [Globals setTopsWeek:topsWeek];
                                      topWeek = topsWeek;
                                      
                                      NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
-                                     NSLog(@"month %@ ", topsMonth);
+                                     //NSLog(@"month %@ ", topsMonth);
                                      [Globals setTopsMonth:topsMonth];
-                                     topMonth = topsWeek;
+                                     topMonth = topsMonth;
                                       
                                      isSearchResult = YES;
+                                     buttonSelected = 1;
                                      [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone: NO];
                                      //[self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                                      NSLog(@"ReloadedTableView");
                                     
                                      loading = false;
-
+                                     
                                  }];
 }
 
 - (void) reloadAndRewind{
     [self.ArticleTableView reloadData];
-    [self.ArticleTableView setContentOffset:CGPointZero animated:YES];
+    //[self.ArticleTableView setContentOffset:CGPointZero animated:YES];
+    
+     CGRect sectionRect = [self.ArticleTableView rectForSection:0];
+     //sectionRect.origin.y -= 72;
+     [self.ArticleTableView setContentOffset:sectionRect.origin animated:YES];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle{
@@ -210,13 +228,13 @@
 - (void) HotTapped:(NSString*) n{
     isHotTapped = YES;
     hotIdPub = [NSString stringWithString:n];
-    NSLog(@"YAAAA");
+   // NSLog(@"YAAAA");
     [self performSegueWithIdentifier: @"toArticle" sender: self];
 }
 
 - (void)viewDidLoad {
     hotPageControl = nil;
-    UIImage *splashImage;
+    //UIImage *splashImage;
     //self.SplashScreen.image = splashImage;
     [super viewDidLoad];
     loading = false;
@@ -237,6 +255,20 @@
     hotList = [Globals getHots];
     
     // Do any additional setup after loading the view.
+}
+
+- (void) viewDidAppear:(BOOL)animated {
+    //NSLog(@"Appear");
+    //int s = 1;
+    // When hotlist countain no news don't display the hot stuffs, this mean to add offset on display
+    /*if([hotList count] ==0) {
+        s = 0;
+        self.NavBar.backgroundColor = [self.NavBar.backgroundColor colorWithAlphaComponent:1.0];
+        CGRect sectionRect = [self.ArticleTableView rectForSection:s];
+        sectionRect.origin.y -= 72;
+        [self.ArticleTableView setContentOffset:sectionRect.origin animated:YES];
+    }*/
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -264,6 +296,8 @@
     }
 
     //NSLog(@"Showing %ld",(long)index);
+    //NSLog(@"%f %f",swipeView.frame.size.height,swipeView.frame.size.width);
+    [hotView setFrame:swipeView.frame];
     
     // Set publication Id
     //NSLog(@"get PubId %@",[FanActuHTTPRequest getParameter:@"idPublication" fromArticles:hotList withIndex:index]);
@@ -274,7 +308,7 @@
     NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"visuel" fromArticles:hotList withIndex:index];
     //NSLog(@"%@",strImgUrl);
     [hotView.image sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
-    //hotView.clipsToBounds = TRUE;
+    hotView.clipsToBounds = TRUE;
     // Configure the Category
     NSString *strCategory = [FanActuHTTPRequest getParameter:@"categorie" fromArticles:hotList withIndex:index];
     [hotView.category setText:[strCategory uppercaseString]];
@@ -290,19 +324,22 @@
     return hotView;
 }
 
-- (void)swipeViewWillBeginDragging:(SwipeView *)swipeView {
-    
-
-}
-
 /*
-- (void)swipeViewDidEndDragging:(SwipeView *)swipeView willDecelerate:(BOOL)decelerate;
-{
+- (void)swipeViewWillBeginDragging:(SwipeView *)swipeView {
     NSArray *views = [swipeView visibleItemViews];
     for(HotView *hv in views){
         hv.clipsToBounds = FALSE;
     }
-}*/
+}
+
+- (void)swipeViewDidEndDragging:(SwipeView *)swipeView willDecelerate:(BOOL)decelerate;
+{
+    NSArray *views = [swipeView visibleItemViews];
+    for(HotView *hv in views){
+        hv.clipsToBounds = TRUE;
+    }
+}
+ */
 
 - (void)swipeViewDidScroll:(SwipeView *)swipeView{
     // MAke this differential?
@@ -342,68 +379,178 @@
     return 2;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell;
-    if(indexPath.section == 0){
-        cell = [tableView dequeueReusableCellWithIdentifier:@"TableFixedHeader" forIndexPath:indexPath];
-        SwipeView *sview = (SwipeView *)[cell.contentView viewWithTag:10];
-        sview.alignment = SwipeViewAlignmentCenter;
-        sview.pagingEnabled = YES;
-        sview.itemsPerPage = 1;
-        sview.truncateFinalPage = YES;
-        sview.clipsToBounds = NO;
-        hotPageControl = (UIPageControl*)[cell.contentView viewWithTag:30];
-        // Trigger the swipe to reload, This reload all the image so there is no loading when swiping
-        [sview reloadData];
-        return cell;
+- (UITableViewCell *) tableView:(UITableView *)tableView HotCellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"headerHots" forIndexPath:indexPath];
+    SwipeView *sview = (SwipeView *)[cell.contentView viewWithTag:10];
+    sview.alignment = SwipeViewAlignmentCenter;
+    sview.pagingEnabled = YES;
+    sview.itemsPerPage = 1;
+    sview.truncateFinalPage = YES;
+    sview.bounces = NO;
+    sview.clipsToBounds = NO;
+    hotPageControl = (UIPageControl*)[cell.contentView viewWithTag:30];
+    // Trigger the swipe to reload, This reload all the image so there is no loading when swiping
+    sw = sview;
+    [sview reloadData];
+    return cell;
+}
+
+- (UITableViewCell *) tableView:(UITableView*)tableView CoverCellForRowAtIndexPath:(NSIndexPath *) indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"headerCover" forIndexPath:indexPath];
+    UIImageView *imgView = (UIImageView *)[cell.contentView viewWithTag:10];
+    //[imgView sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
+    UILabel *universLabel = (UILabel *)[cell.contentView viewWithTag:12];
+    if(!isSearchResult)
+        [universLabel setText:@"!!UNIVERS!!"];
+    else
+        [universLabel setText:@""];
+    return cell;
+}
+
+- (UITableViewCell *) tableView:(UITableView *)tableView ArticleCellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSMutableArray *articleList = [self getDisplayedArticleList];
+    // Get a cell
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ArticleRow" forIndexPath:indexPath];
+    
+    // Configure the Cell img
+    UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:20];
+    NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"img" fromArticles:articleList withIndex:indexPath.row];
+    //NSLog(@"url %@",strImgUrl);
+    [img sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
+    
+    // Configure the Cell author
+    //UILabel *Who = (UILabel *)[cell.contentView viewWithTag:12];
+    NSString *strAutor = [FanActuHTTPRequest getParameter:@"author" fromArticles:articleList withIndex:indexPath.row];
+    //[Who setText:strAutor];
+    
+    // Configure the Cell title
+    UILabel *Title = (UILabel *)[cell.contentView viewWithTag:10];
+    NSString *strTitle = [FanActuHTTPRequest getParameter:@"titre" fromArticles:articleList withIndex:indexPath.row];
+    [Title setText:[strTitle uppercaseString]];
+    
+    // Configure the Cell time
+    UILabel *Time = (UILabel *)[cell.contentView viewWithTag:11];
+    //NSString *strDate = [FanActuHTTPRequest getParameter:@"date" fromArticles:articleList withIndex:indexPath.row];
+    NSString *rawStrDate = [FanActuHTTPRequest getParameter:@"dateTime" fromArticles:articleList withIndex:indexPath.row];
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *date = [dateFormat dateFromString:rawStrDate];
+    NSString *strDate = [Globals getDateStringWithDate:date];
+    NSString *dateAutor = [strDate stringByAppendingString:[NSString stringWithFormat:@" | Par %@",strAutor]];
+    [Time setText:dateAutor];
+    return cell;
+}
+
+- (UITableViewCell *) tableView:(UITableView *)tableView LoadingCellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // This is the activity indicator
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LoadingIndicator" forIndexPath:indexPath];
+    UIActivityIndicatorView *loadingIndicator = (UIActivityIndicatorView *)[cell.contentView viewWithTag:10];
+    [loadingIndicator startAnimating];
+    return cell;
+}
+
+- (UITableViewCell *) HeaderCellForTableView:(UITableView *)tableView{
+    HorizontalStackButtonCell *cell = (HorizontalStackButtonCell*)[tableView dequeueReusableCellWithIdentifier:@"HeaderProg"];
+    
+    NSLog(@"%p",cell.stackView);
+    b1 = [UIButton buttonWithType:UIButtonTypeCustom];
+    b1.titleLabel.font = [UIFont fontWithName:@"Fugaz One" size:17.0];
+    if(!isSearchResult){
+        [b1 setTitle:@"ACTUALITÉS" forState:UIControlStateNormal];
     } else {
-        NSMutableArray *articleList = [self getDisplayedArticleList];
-        if(indexPath.row != [articleList count]) {
-            // Get a cell
-            cell = [tableView dequeueReusableCellWithIdentifier:@"ArticleRow" forIndexPath:indexPath];
-            
-            // Configure the Cell img
-            UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:20];
-            NSString *strImgUrl = [FanActuHTTPRequest getParameter:@"img" fromArticles:articleList withIndex:indexPath.row];
-            NSLog(@"url %@",strImgUrl);
-            [img sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
-            
-            // Configure the Cell author
-            //UILabel *Who = (UILabel *)[cell.contentView viewWithTag:12];
-            NSString *strAutor = [FanActuHTTPRequest getParameter:@"author" fromArticles:articleList withIndex:indexPath.row];
-            //[Who setText:strAutor];
-            
-            // Configure the Cell title
-            UILabel *Title = (UILabel *)[cell.contentView viewWithTag:10];
-            NSString *strTitle = [FanActuHTTPRequest getParameter:@"titre" fromArticles:articleList withIndex:indexPath.row];
-            [Title setText:[strTitle uppercaseString]];
-            
-            // Configure the Cell time
-            UILabel *Time = (UILabel *)[cell.contentView viewWithTag:11];
-            NSString *strDate = [FanActuHTTPRequest getParameter:@"date" fromArticles:articleList withIndex:indexPath.row];
-            NSString *dateAutor = [strDate stringByAppendingString:[NSString stringWithFormat:@" | Par %@",strAutor]];
-            [Time setText:dateAutor];
-        } else {
-            // This is the activity indicator
-            cell = [tableView dequeueReusableCellWithIdentifier:@"LoadingIndicator" forIndexPath:indexPath];
-             UIActivityIndicatorView *loadingIndicator = (UIActivityIndicatorView *)[cell.contentView viewWithTag:10];
-            [loadingIndicator startAnimating];
-        }
+        [b1 setTitle:@"RESULTATS" forState:UIControlStateNormal];
+    }
+    //[b1.heightAnchor constraintEqualToConstant:25].active = true;
+    //[b1.widthAnchor constraintEqualToConstant:70].active = true;
+    [cell.stackView addArrangedSubview:b1];
+    [b1 addTarget:self action:@selector(buttonTouched:) forControlEvents:UIControlEventTouchDown];
+    
+    // Create the views to be add in the arrow stack View
+    UIImageView *uiv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"flechejaune"]];
+    uiv.contentMode = UIViewContentModeScaleAspectFit;
+    UIView *dum1 = [[UIView alloc] init];
+    UIView *dum2 = [[UIView alloc] init];
+    UIView *dum3 = [[UIView alloc] init];
+
+    if(buttonSelected == 1) {
+        [cell.arrowStackView addArrangedSubview: uiv];
+    } else {
+        [cell.arrowStackView addArrangedSubview: dum1];
     }
 
+    if(!isSearchResult) {
+        if( [topWeek count] != 0) {
+            b2 = [UIButton buttonWithType:UIButtonTypeCustom];
+            b2.titleLabel.font = [UIFont fontWithName:@"Fugaz One" size:15.0];
+            [b2 setTitle:@"TOP SEMAINE" forState:UIControlStateNormal];
+            //[b2.heightAnchor constraintEqualToConstant:25].active = true;
+            //[b2.widthAnchor constraintEqualToConstant:70].active = true;
+            [b2 addTarget:self action:@selector(buttonTouched:) forControlEvents:UIControlEventTouchDown];
+            [cell.stackView addArrangedSubview:b2];
+            if(buttonSelected == 2) {
+                [cell.arrowStackView addArrangedSubview: uiv];
+            } else {
+                [cell.arrowStackView addArrangedSubview: dum2];
+            }
+        }
+        
+        if( [topMonth count] != 0) {
+            b3 = [UIButton buttonWithType:UIButtonTypeCustom];
+            b3.titleLabel.font = [UIFont fontWithName:@"Fugaz One" size:15.0];
+            [b3 setTitle:@"TOP MOIS" forState:UIControlStateNormal];
+            //[b3.heightAnchor constraintEqualToConstant:25].active = true;
+            //[b3.widthAnchor constraintEqualToConstant:70].active = true;
+            [cell.stackView addArrangedSubview:b3];
+            [b3 addTarget:self action:@selector(buttonTouched:) forControlEvents:UIControlEventTouchDown];
+            if(buttonSelected == 3) {
+                [cell.arrowStackView addArrangedSubview: uiv];
+            } else {
+                [cell.arrowStackView addArrangedSubview: dum3];
+            }
+
+        }
+    }
+    
+    [cell layoutIfNeeded]; // <- added
+    
+    NSLog(@"w %f",b1.frame.size.width);
+    NSLog(@"h %f",b1.frame.size.height);
+    
+    cell.stackView.translatesAutoresizingMaskIntoConstraints = false;
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell;
+
+    if(indexPath.section == 0){
+        NSLog(@"idUnivers = %ld",[idUnivers integerValue]);
+        if(([idUnivers integerValue] == 0) && !isSearchResult) {
+            cell = [self tableView:tableView HotCellForRowAtIndexPath:indexPath];
+        } else {
+            cell = [self tableView:tableView CoverCellForRowAtIndexPath:indexPath];
+        }
+    } else {
+        if(indexPath.row != [[self getDisplayedArticleList] count]) {
+            cell = [self tableView: tableView ArticleCellForRowAtIndexPath:indexPath];
+        } else {
+            cell = [self tableView: tableView LoadingCellForRowAtIndexPath:indexPath];
+        }
+    }
     return cell;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(section == 0)
+    if(section == 0)    // This is the hot section so 1 row
         return 1;
     else {
         NSMutableArray *articleList = [self getDisplayedArticleList];
-        if(isSearchResult) {
+        return [articleList count];
+        /*if(isSearchResult || noMoreResults) {
             return [articleList count]; // when this is a search result don't add the activity indicator
         } else {
             return [articleList count] + 1;
-        }
+        }*/
     }
 }
 
@@ -418,20 +565,34 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if(section == 1)
-        return 50;
+            return 50;
     return 0;
 }
+
+/* // This is just a prevention of functional selection not visual
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"About to be selected %@ [%d %@]",indexPath,(isSearchResult)?1:0,idUnivers);
+    if( ((indexPath.section == 0) && (indexPath.row == 0)) && (isSearchResult || ([idUnivers integerValue] != 0)) ) {
+        NSLog(@"Here");
+        return nil;
+    } else {
+        NSLog(@"Or Here");
+        return indexPath;
+    }
+}
+*/
 
 - (void) buttonTouched:(UIButton *)sender {
     // A revoir
     int oldButtonSelected = buttonSelected;
-    if(sender == B1) {
+    if(sender == b1) {
         //NSLog(@"B1 TOUCHED");
+        b3.titleLabel.font = [UIFont fontWithName:@"Fugaz One" size:17.0];
         buttonSelected = 1;
-    } else if(sender == B2) {
+    } else if(sender == b2) {
         //NSLog(@"B2 TOUCHED");
         buttonSelected = 2;
-    } else if(sender == B3){
+    } else if(sender == b3){
         //NSLog(@"B3 TOUCHED");
         buttonSelected = 3;
     }
@@ -440,6 +601,11 @@
         // This is not very clean, we need to reload only the section headerTouch
         [self.ArticleTableView reloadData];
     }
+    // Make the view goes up when we touch the buttons
+    // Take the reference of the section frame and put it just under the header section (72)
+    CGRect sectionRect = [self.ArticleTableView rectForSection:1];
+    sectionRect.origin.y -= 72;
+    [self.ArticleTableView setContentOffset:sectionRect.origin animated:YES];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -447,62 +613,7 @@
     if(section == 0) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"Empty"];
     } else {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"Header"];
-        B1 = (UIButton *)[cell.contentView viewWithTag:10];
-        B2 = (UIButton *)[cell.contentView viewWithTag:11];
-        B3 = (UIButton *)[cell.contentView viewWithTag:12];
-        [B1 setTitle:@"ACTUALITÉS" forState:UIControlStateNormal];
-        [B2 setTitle:@"TOP SEMAINE" forState:UIControlStateNormal];
-        [B3 setTitle:@"TOP MOIS" forState:UIControlStateNormal];
-        int n = 0;
-        if(buttonSelected == 1) {
-            n = 1;
-            [B1.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:17]];
-            B1.titleLabel.textColor = SelectedColor;
-            // Add the little "down arrow"
-            
-            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
-            CGFloat imgW = arrow.size.width;
-            CGFloat imgH = arrow.size.height;
-            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,B1.frame.size.height-3, imgW, imgH)];
-            arrowView.image = arrow;
-            [B1 addSubview:arrowView];
-        } else {
-            [B1.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:15]];
-            B1.titleLabel.textColor = UnselectedColor;
-        }
-        if(buttonSelected == 2) {
-            n = 3;
-            [B2.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:17]];
-            B2.titleLabel.textColor = SelectedColor;
-            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
-            CGFloat imgW = arrow.size.width;
-            CGFloat imgH = arrow.size.height;
-            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,B2.frame.size.height-3, imgW, imgH)];
-            arrowView.image = arrow;
-            [B2 addSubview:arrowView];
-            
-        } else {
-            [B2.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:15]];
-            B2.titleLabel.textColor = UnselectedColor;
-        }
-        if(buttonSelected == 3) {
-            n = 5;
-            [B3.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:17]];
-            B3.titleLabel.textColor = SelectedColor;
-            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
-            CGFloat imgW = arrow.size.width;
-            CGFloat imgH = arrow.size.height;
-            UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(B1.frame.size.width/2-imgW/2,B3.frame.size.height-3, imgW, imgH)];
-            arrowView.image = arrow;
-            [B3 addSubview:arrowView];
-        } else {
-            [B3.titleLabel setFont:[UIFont fontWithName:@"Fugaz One" size:15]];
-            B3.titleLabel.textColor = UnselectedColor;
-        }
-        [B1 addTarget:self action:@selector(buttonTouched:) forControlEvents:UIControlEventTouchDown];
-        [B2 addTarget:self action:@selector(buttonTouched:) forControlEvents:UIControlEventTouchDown];
-        [B3 addTarget:self action:@selector(buttonTouched:) forControlEvents:UIControlEventTouchDown];
+        cell = [self HeaderCellForTableView:tableView];
     }
     return (UIView*)cell;
 }
@@ -512,26 +623,9 @@
     CGFloat actualPosition = scrollView_.contentOffset.y;
     CGFloat contentHeight = scrollView_.contentSize.height - (self.ArticleTableView.frame.size.height+200);
     
-    CGFloat fullOpacityHeight = 120.0;
-    // navbar background opacity
-    if ((actualPosition<=fullOpacityHeight)&&(actualPosition>0)){
-        CGFloat opacity = 1.0-(fullOpacityHeight-actualPosition)/fullOpacityHeight;
-        //NSLog(@"opacity %f",opacity);
-        self.NavBar.backgroundColor = [self.NavBar.backgroundColor colorWithAlphaComponent:opacity];
-    } else if (actualPosition>fullOpacityHeight) {
-        self.NavBar.backgroundColor = [self.NavBar.backgroundColor colorWithAlphaComponent:1.0];
-    }
-    
-    // avoid header goes under navbar
     CGFloat navBarHeight = 72;
-    //NSLog(@"%f",actualPosition);
-    if (actualPosition>=navBarHeight) {
-        self.ArticleTableView.contentInset = UIEdgeInsetsMake(navBarHeight, 0, 0, 0);
-    } else {
-        self.ArticleTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
-    }
     
-    if(!isSearchResult) {
+    if(!isSearchResult && !noMoreResults && (buttonSelected == 1)) {
         // loading next view
         if ((actualPosition >= contentHeight)&& (!loading)) {
             loading = true;
@@ -543,20 +637,48 @@
             dateString = [Globals getEncodedDate:dateString];
             NSLog(@"Last Arcticle %@",dateString);
             [FanActuHTTPRequest requestArticlesWithCategory:idCategory
-                                                    univers:@0
+                                                    univers:idUnivers
                                                        date:dateString
                                          andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
-                   // handle response
-                   [articleList addObjectsFromArray: [(NSMutableDictionary*)[NSJSONSerialization
-                                                         JSONObjectWithData:data
-                                                         options:NSJSONReadingMutableContainers
-                                                         error:&error] objectForKey:@"actus"]];
-                   //NSLog(@" %@ ", articleList);
-                   [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-                   NSLog(@"ReloadedTableView");
+                    if(data) {
+                        NSMutableArray *newResults = [(NSMutableDictionary*)[NSJSONSerialization
+                                                                     JSONObjectWithData:data
+                                                                                options:NSJSONReadingMutableContainers
+                                                                                  error:&error] objectForKey:@"actus"];
+                       if([newResults count] != 0) {
+                           // handle response
+                           [articleList addObjectsFromArray: newResults];
+                           //NSLog(@" %@ ", articleList);
+                           [self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+                           NSLog(@"ReloadedTableView");
+                       } else {
+                           noMoreResults = true;
+                       }
+                   }
                    loading = false;
                }];
         }
+    }
+    
+        
+    CGFloat fullOpacityHeight = 120.0;
+    // navbar background opacity
+    //if ((actualPosition<=fullOpacityHeight)&&(actualPosition>0)){
+    if ((actualPosition<=fullOpacityHeight)){
+        CGFloat opacity = 1.0-(fullOpacityHeight-actualPosition)/fullOpacityHeight;
+        //NSLog(@"opacity %f",opacity);
+        self.NavBar.backgroundColor = [self.NavBar.backgroundColor colorWithAlphaComponent:opacity];
+    } else if (actualPosition>fullOpacityHeight) {
+        self.NavBar.backgroundColor = [self.NavBar.backgroundColor colorWithAlphaComponent:1.0];
+    }
+    
+    // avoid header goes under navbar
+    
+    //NSLog(@"%f",actualPosition);
+    if (actualPosition>=navBarHeight) {
+        self.ArticleTableView.contentInset = UIEdgeInsetsMake(navBarHeight, 0, 0, 0);
+    } else {
+        self.ArticleTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
     }
     
     // Do the nice resizing stuffs for carousel
@@ -566,16 +688,41 @@
     int index = 0;
     for(NSIndexPath *visibleIndex in visibleIndexes) {
         if((visibleIndex.section == 0)&&(visibleIndex.row == 0)) {
-            UITableViewCell *tvc = [visibleCells objectAtIndex:index];
-            SwipeView *swv = (SwipeView*)[tvc.contentView viewWithTag:10];
-            HotView *hv = (HotView*)[swv itemViewAtIndex:swv.currentItemIndex];
-            CGFloat computedVisiblePart = 255-actualPosition;
-            //NSLog(@"visiblePart %f",computedVisiblePart);
-            hv.image.frame = (CGRectMake(0,-computedVisiblePart+255, hv.image.frame.size.width, computedVisiblePart));
-            hv.colorOverlay.frame = (CGRectMake(0,-computedVisiblePart+255, hv.image.frame.size.width, computedVisiblePart));
-            //CGRect cellSize = [self.ArticleTableView rectForRowAtIndexPath:visibleIndex];
+            if(([idUnivers integerValue] == 0) && !isSearchResult) {
+                UITableViewCell *tvc = [visibleCells objectAtIndex:index];
+                SwipeView *swv = (SwipeView*)[tvc.contentView viewWithTag:10];
+                HotView *hv = (HotView*)[swv itemViewAtIndex:swv.currentItemIndex];
+                CGFloat computedVisiblePart = 255-actualPosition;
+                //NSLog(@"visiblePart %f",computedVisiblePart);
+                hv.image.frame = (CGRectMake(0,-computedVisiblePart+255, hv.image.frame.size.width, computedVisiblePart));
+                hv.colorOverlay.frame = (CGRectMake(0,-computedVisiblePart+255, hv.image.frame.size.width, computedVisiblePart));
+                //CGRect cellSize = [self.ArticleTableView rectForRowAtIndexPath:visibleIndex];
+            } else {
+                //NSLog(@"Universe Thing");
+                CGFloat computedVisiblePart = 255-actualPosition;
+                UITableViewCell *tvc = [visibleCells objectAtIndex:index];
+                UILabel *universLabel = (UILabel *)[tvc.contentView viewWithTag:12];
+                if(isSearchResult) {
+                    //[universLabel setText:@"RESULTS"];
+                    [universLabel setText:@""];
+                } else {
+                    [universLabel setText:[NSString stringWithFormat:@"!!%d!!",(int)computedVisiblePart]];
+                }
+            }
         }
         index++;
+    }
+    /*
+    {
+        self.NavBar.backgroundColor = [self.NavBar.backgroundColor colorWithAlphaComponent:1.0];
+        self.ArticleTableView.contentInset = UIEdgeInsetsMake(navBarHeight, 0, 0, 0);
+    }
+    */
+    
+    // HotView Stuffs
+    NSArray *views = [sw visibleItemViews];
+    for(HotView *hv in views){
+        hv.clipsToBounds = false;
     }
 }
 

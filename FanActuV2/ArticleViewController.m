@@ -10,6 +10,11 @@
 #import "CustomTableViewCells.h"
 #import "UIImageView+WebCache.h"
 #import "FanActuHTTPRequest.h"
+
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+//#import <FBSDKLoginKit/FBSDKLoginKit.h>
+
 @import AVFoundation;
 @import AVKit;
 
@@ -23,144 +28,148 @@
     return UIStatusBarStyleLightContent;
 }
 
+- (void) loadNetworkData {
+    [FanActuHTTPRequest requestArticleWithId:publicationId
+                          andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
+                              // handle response
+                              NSDictionary *articleData = [(NSDictionary*)[NSJSONSerialization
+                                                                           JSONObjectWithData:data
+                                                                           options:NSJSONReadingMutableContainers
+                                                                           error:&error] objectForKey:@"article"];
+                              
+                              NSLog(@"articleData %@", articleData);
+                              
+                              articleInfos = [articleData objectForKey:@"infos"];
+                              articlePages = [[articleData objectForKey:@"content"] objectForKey:@"pages"];
+                              articleUnivers = [articleData objectForKey:@"univers"];
+                              articleConnex = [articleData objectForKey:@"recommandations"];
+                              
+                              NSDictionary *coverDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                        [NSNumber numberWithInt:-1],@"ident",
+                                                        [articleInfos objectForKey:@"visuelCover"],@"visualCover",
+                                                        [articleInfos objectForKey:@"categorie"],@"category",nil];
+                              NSDictionary *titleDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                        [NSNumber numberWithInt:0],@"ident",
+                                                        [articleInfos objectForKey:@"titre"],@"title",
+                                                        [articleInfos objectForKey:@"datePublication"],@"when",
+                                                        [articleInfos objectForKey:@"auteur"],@"who",nil];
+                              NSDictionary *shareDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                        [NSNumber numberWithInt:1],@"ident",
+                                                        [articleInfos objectForKey:@"shares"],@"shares",nil];
+                              
+                              composedArticle = [NSMutableArray arrayWithObjects:coverDic,titleDic,shareDic,nil];
+                              
+                              
+                              for(NSDictionary *page in articlePages) {
+                                  NSArray *blocs = [page objectForKey:@"blocs"];
+                                  for(NSDictionary *bloc in blocs) {
+                                      //NSLog(@"BLOCS %@",bloc);
+                                      if (([[bloc objectForKey:@"type"] integerValue] == 1) ||
+                                          ([[bloc objectForKey:@"type"] integerValue] == 5)) {
+                                          // Paragraph
+                                          if([(NSString*)[bloc objectForKey:@"value"] compare:@""] != NSOrderedSame) {
+                                              NSDictionary *paragDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                        [ NSNumber numberWithInt:2],@"ident",
+                                                                        [bloc objectForKey:@"value"],@"text",nil];
+                                              // NSLog(@"%@",paragDic);
+                                              [composedArticle addObject:paragDic];
+                                          }
+                                      } else if ([[bloc objectForKey:@"type"] integerValue] == 2) {
+                                          // Image
+                                          NSDictionary *imgDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                  [ NSNumber numberWithInt:3],@"ident",
+                                                                  [bloc objectForKey:@"value"],@"imgLink",
+                                                                  [bloc objectForKey:@"copyright"],@"copyright",nil];
+                                          [composedArticle addObject:imgDic];
+                                          // This is a dynamic load
+                                          SDWebImageManager *manager = [SDWebImageManager sharedManager];
+                                          [manager downloadImageWithURL:[NSURL URLWithString:[bloc objectForKey:@"value"]]
+                                                                options:0
+                                                               progress:^(NSInteger receivedSize, NSInteger expectedSize)
+                                           {
+                                               //NSLog(@"Loading image %@ - %ld/%ld",[bloc objectForKey:@"value"],receivedSize,expectedSize);
+                                           }
+                                                              completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageUrl) {
+                                                                  //NSLog(@"Error %@",error);
+                                                                  long n = [((NSNumber*)[bloc objectForKey:@"idBloc"]) integerValue];
+                                                                  float ratio = image.size.width / image.size.height;
+                                                                  //NSLog(@"Caching images %f",ratio);
+                                                                  [imgRatiosCache setValue:[NSNumber numberWithFloat:ratio] forKey:[NSString stringWithFormat:@"%ld",n ]] ;
+                                                              }
+                                           ];
+                                      } else if (([[bloc objectForKey:@"type"] integerValue] == 3) ||
+                                                 ([[bloc objectForKey:@"type"] integerValue] == 4) ||
+                                                 ([[bloc objectForKey:@"type"] integerValue] == 6)) {
+                                          int ident = 0;
+                                          switch([[bloc objectForKey:@"type"] integerValue]) {
+                                              case 3:
+                                                  ident = 4;
+                                                  break;
+                                              case 4:
+                                                  ident = 5;
+                                                  break;
+                                              case 6:
+                                                  ident = 6;
+                                                  break;
+                                          }
+                                          // Youtube
+                                          NSDictionary *vidDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                  [ NSNumber numberWithInt:ident],@"ident",
+                                                                  [bloc objectForKey:@"value"],@"id",
+                                                                  [NSNumber numberWithFloat:1.5],@"ratio", nil];
+                                          [composedArticle addObject:vidDic];
+                                      } else if ([[bloc objectForKey:@"type"] integerValue] == 8) {
+                                          NSDictionary *annecDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                    [NSNumber numberWithInt:9],@"ident",
+                                                                    [bloc objectForKey:@"titre"],@"title",
+                                                                    [bloc objectForKey:@"value"],@"anecdote",
+                                                                    [bloc objectForKey:@"photo"],@"photo",
+                                                                    [bloc objectForKey:@"copyright"],@"copyright",nil];
+                                          
+                                          [composedArticle addObject:annecDic];
+                                      }
+                                  }
+                              }
+                              
+                              NSDictionary *footBar = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                       [NSNumber numberWithInt:7],@"ident",nil];
+                              [composedArticle addObject:footBar];
+                              
+                              //NSLog(@"Connexes %@",articleConnex);
+                              int nConnexes = 0;
+                              for(NSDictionary *article in articleConnex) {
+                                  if(nConnexes<5) {
+                                      NSDictionary *connexe = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                               [NSNumber numberWithInt:8],@"ident",
+                                                               [article objectForKey:@"titre"],@"title",
+                                                               [article objectForKey:@"datePublication"],@"when",
+                                                               [article objectForKey:@"idPublication"],@"idPub",
+                                                               [article objectForKey:@"auteur"],@"who",
+                                                               [article objectForKey:@"image"],@"photo",
+                                                               [article objectForKey:@"shares"],@"shares",nil];
+                                      [composedArticle addObject:connexe];
+                                      nConnexes++;
+                                  }
+                              }
+                              //NSLog(@" %@ ", articleData);
+                              
+                              [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone:NO];
+                              
+                              NSLog(@"ReloadedTableView");
+                              
+                          }];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     imgRatiosCache = [NSMutableDictionary dictionary];
     
-    NSLog(@"frame %f, %f",self.view.frame.size.width,self.view.frame.size.height);
+    //NSLog(@"frame %f, %f",self.view.frame.size.width,self.view.frame.size.height);
     
     NSLog(@"ArticleViewController Load %@",publicationId);
 
-    [FanActuHTTPRequest requestArticleWithId:publicationId 
-                               andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                   // handle response
-                                   NSDictionary *articleData = [(NSDictionary*)[NSJSONSerialization
-                                                         JSONObjectWithData:data
-                                                         options:NSJSONReadingMutableContainers
-                                                                  error:&error] objectForKey:@"article"];
-                                   
-                                   //NSLog(@"articleData %@", articleData);
-                                   
-                                   articleInfos = [articleData objectForKey:@"infos"];
-                                   articlePages = [[articleData objectForKey:@"content"] objectForKey:@"pages"];
-                                   articleUnivers = [articleData objectForKey:@"univers"];
-                                   articleConnex = [articleData objectForKey:@"recommandations"];
-                                   
-                                   NSDictionary *coverDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                             [NSNumber numberWithInt:-1],@"ident",
-                                                             [articleInfos objectForKey:@"visuelCover"],@"visualCover",
-                                                             [articleInfos objectForKey:@"categorie"],@"category",nil];
-                                   NSDictionary *titleDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                             [NSNumber numberWithInt:0],@"ident",
-                                                             [articleInfos objectForKey:@"titre"],@"title",
-                                                             [articleInfos objectForKey:@"datePublication"],@"when",
-                                                             [articleInfos objectForKey:@"auteur"],@"who",nil];
-                                   NSDictionary *shareDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                             [NSNumber numberWithInt:1],@"ident",
-                                                             [articleInfos objectForKey:@"shares"],@"shares",nil];
-
-                                   composedArticle = [NSMutableArray arrayWithObjects:coverDic,titleDic,shareDic,nil];
-                                   
-                                   
-                                   for(NSDictionary *page in articlePages) {
-                                       NSArray *blocs = [page objectForKey:@"blocs"];
-                                       for(NSDictionary *bloc in blocs) {
-                                           //NSLog(@"BLOCS %@",bloc);
-                                           if (([[bloc objectForKey:@"type"] integerValue] == 1) ||
-                                               ([[bloc objectForKey:@"type"] integerValue] == 5)) {
-                                               // Paragraph
-                                               if([(NSString*)[bloc objectForKey:@"value"] compare:@""] != NSOrderedSame) {
-                                                   NSDictionary *paragDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                             [ NSNumber numberWithInt:2],@"ident",
-                                                                             [bloc objectForKey:@"value"],@"text",nil];
-                                                   // NSLog(@"%@",paragDic);
-                                                   [composedArticle addObject:paragDic];
-                                               }
-                                           } else if ([[bloc objectForKey:@"type"] integerValue] == 2) {
-                                               // Image
-                                               NSDictionary *imgDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                         [ NSNumber numberWithInt:3],@"ident",
-                                                                         [bloc objectForKey:@"value"],@"imgLink",
-                                                                         [bloc objectForKey:@"copyright"],@"copyright",nil];
-                                               [composedArticle addObject:imgDic];
-                                               // This is a dynamic load
-                                               SDWebImageManager *manager = [SDWebImageManager sharedManager];
-                                               [manager downloadImageWithURL:[NSURL URLWithString:[bloc objectForKey:@"value"]]
-                                                                     options:0
-                                                                    progress:^(NSInteger receivedSize, NSInteger expectedSize)
-                                                                        {
-                                                                        //NSLog(@"Loading image %@ - %ld/%ld",[bloc objectForKey:@"value"],receivedSize,expectedSize);
-                                                                        }
-                                                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageUrl) {
-                                                                       //NSLog(@"Error %@",error);
-                                                                       long n = [((NSNumber*)[bloc objectForKey:@"idBloc"]) integerValue];
-                                                                       float ratio = image.size.width / image.size.height;
-                                                                       //NSLog(@"Caching images %f",ratio);
-                                                                            [imgRatiosCache setValue:[NSNumber numberWithFloat:ratio] forKey:[NSString stringWithFormat:@"%ld",n ]] ;
-                                                                        }
-                                                                    ];
-                                           } else if (([[bloc objectForKey:@"type"] integerValue] == 3) ||
-                                                    ([[bloc objectForKey:@"type"] integerValue] == 4) ||
-                                                    ([[bloc objectForKey:@"type"] integerValue] == 6)) {
-                                               int ident = 0;
-                                               switch([[bloc objectForKey:@"type"] integerValue]) {
-                                                   case 3:
-                                                       ident = 4;
-                                                       break;
-                                                   case 4:
-                                                       ident = 5;
-                                                       break;
-                                                   case 6:
-                                                       ident = 6;
-                                                       break;
-                                               }
-                                               // Youtube
-                                               NSDictionary *vidDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                       [ NSNumber numberWithInt:ident],@"ident",
-                                                                       [bloc objectForKey:@"value"],@"id",
-                                                                       [NSNumber numberWithFloat:1.5],@"ratio", nil];
-                                               [composedArticle addObject:vidDic];
-                                           } else if ([[bloc objectForKey:@"type"] integerValue] == 8) {
-                                               NSDictionary *annecDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                       [NSNumber numberWithInt:9],@"ident",
-                                                                       [bloc objectForKey:@"titre"],@"title",
-                                                                       [bloc objectForKey:@"value"],@"anecdote",
-                                                                       [bloc objectForKey:@"photo"],@"photo",
-                                                                       [bloc objectForKey:@"copyright"],@"copyright",nil];
-                                               
-                                               [composedArticle addObject:annecDic];
-                                           }
-                                       }
-                                   }
-                                   
-                                   NSDictionary *footBar = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                             [NSNumber numberWithInt:7],@"ident",nil];
-                                   [composedArticle addObject:footBar];
-                                   
-                                   //NSLog(@"Connexes %@",articleConnex);
-                                   int nConnexes = 0;
-                                   for(NSDictionary *article in articleConnex) {
-                                       if(nConnexes<5) {
-                                           NSDictionary *connexe = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                                    [NSNumber numberWithInt:8],@"ident",
-                                                                    [article objectForKey:@"titre"],@"title",
-                                                                    [article objectForKey:@"datePublication"],@"when",
-                                                                    [article objectForKey:@"idPublication"],@"idPub",
-                                                                    [article objectForKey:@"auteur"],@"who",
-                                                                    [article objectForKey:@"image"],@"photo",
-                                                                    [article objectForKey:@"shares"],@"shares",nil];
-                                           [composedArticle addObject:connexe];
-                                           nConnexes++;
-                                       }
-                                   }
-                                   //NSLog(@" %@ ", articleData);
-                                   
-                                   [self.articleTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-                                   
-                                   NSLog(@"ReloadedTableView");
-
-                               }];
+    [self loadNetworkData];
     
     // Do any additional setup after loading the view, typically from a nib.
     if(NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
@@ -169,11 +178,35 @@
     }
 }
 
+- (void) reloadAndRewind{
+    [self.articleTable reloadData];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.articleTable scrollToRowAtIndexPath:indexPath
+                         atScrollPosition:UITableViewScrollPositionTop
+                                 animated:YES];
+    //[self.articleTable setContentOffset:CGPointZero animated:YES];
+}
+
 - (void)attributedLabel:(TTTAttributedLabel *)label
    didSelectLinkWithURL:(NSURL *)url {
     NSLog(@"Clicked URL: %@",url);
+    NSString *sUrl = [url absoluteString];
+    NSArray *aUrl = [sUrl componentsSeparatedByString:@"/"];
+    NSLog(@"%@",aUrl);
+    if([(NSString*)[aUrl objectAtIndex:2] isEqualToString:@"www.fanactu.com"]){
+        NSLog(@"Internal link");
+        if([(NSString*)[aUrl objectAtIndex:3] isEqualToString:@"univers"]){
+            NSLog(@"You clicked on Univers %@",[aUrl objectAtIndex:5]);
+        } else {
+            NSLog(@"You clicked on Article %@",[aUrl objectAtIndex:5]);
+            publicationId = [NSString stringWithString: [aUrl objectAtIndex:5]];
+            [self loadNetworkData];
+        }
+    } else {
+        NSLog(@"External link");
+        [[UIApplication sharedApplication] openURL:url];
+    }
     //NSURL *myURL = [NSURL URLWithString:@"todolist://www.acme.com?Quarterly%20Report#200806231300"];
-    [[UIApplication sharedApplication] openURL:url];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -199,12 +232,14 @@
     // Get the Cell type
     NSDictionary *blockOfInterest = (NSDictionary*)[composedArticle objectAtIndex:indexPath.row];
     NSNumber *blockId = (NSNumber*)[blockOfInterest objectForKey:@"ident"];
+    NSLog(@"HERE %@ - %ld",blockId, indexPath.row);
     switch ([blockId integerValue]) {
         case -1: {
             ImageHeaderCell *myCell = (ImageHeaderCell*)[tableView dequeueReusableCellWithIdentifier:@"ImageHeader" forIndexPath:indexPath];
             NSString *visualCoverUrl = (NSString *)[blockOfInterest objectForKey:@"visualCover"];
             NSString *category = (NSString *)[blockOfInterest objectForKey:@"category"];
             [myCell.Image sd_setImageWithURL:[NSURL URLWithString:visualCoverUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
+            myCell.Image.clipsToBounds = true;
             [myCell.Category setText:[category uppercaseString]];
             cell = myCell;
             break;
@@ -233,6 +268,16 @@
                 shares = [NSString stringWithFormat:@"%ld",[nShares integerValue]];
             }
             [myCell.shares setText:shares];
+            /*
+            http://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.fanactu.com%2Fdossiers%2Fcinema%2F5388%2Fune-premiere-bande-annonce-pour-dejante-swiss-army-man-avec-daniel-radcliffe.html
+             */
+            /*
+            FBSDKLikeControl *button = [[FBSDKLikeControl alloc] init];
+            button.objectID = @"https://www.facebook.com/FacebookDevelopers";
+            */
+            FBSDKLikeButton *button = [[FBSDKLikeButton alloc] init];
+            button.objectID =  @"https://www.facebook.com/FacebookDevelopers";
+            [myCell addSubview:button];
             cell = myCell;
             break;
         }
@@ -264,8 +309,6 @@
             // Configure TTTAttributedLAbel
             myCell.Text.delegate = self;
             myCell.Text.userInteractionEnabled=YES;
-
-
             
             //[myCell.Text setText:richText];
             cell = myCell;
@@ -320,7 +363,7 @@
             <iframe class=\"player\" type=\"text/html\" width=\"%fpx\" height=\"%fpx\" src=\"%@\" frameborder=\"0\"></iframe>\
             </body>\
             </html>";
-            NSString *strHtml = [NSString stringWithFormat:embedHTML,[NSString stringWithFormat:providerUrl,width,height,videoId]];
+            NSString *strHtml = [NSString stringWithFormat:embedHTML,width,height,[NSString stringWithFormat:providerUrl,videoId]];
             [myCell.VideoView  loadHTMLString:strHtml baseURL:nil];
             myCell.VideoView.scrollView.scrollEnabled = NO;
             myCell.VideoView.scrollView.bounces = NO;
@@ -329,13 +372,13 @@
         }
         case 7: {
             cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:@"FooterBar" forIndexPath:indexPath];
-            UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
+            /*UIImage *arrow = [UIImage imageNamed:@"flechejaune"];
             CGFloat imgW = arrow.size.width;
             CGFloat imgH = arrow.size.height;
             UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(cell.frame.size.width/2-imgW/2,cell
                                                                                    .frame.size.height-3, imgW, imgH)];
             arrowView.image = arrow;
-            [cell addSubview:arrowView];
+            [cell addSubview:arrowView];*/
             cell.clipsToBounds = false;
             break;
         }
@@ -363,7 +406,7 @@
             [myCell.image sd_setImageWithURL:[NSURL URLWithString:imgLink] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
             
             [myCell.SensitiveOverlay setValue:idPub];
-            //[myCell.SensitiveOverlay addTarget:self action:@selector(wantMoreTouched:) forControlEvents:UIControlEventTouchUpInside];
+            [myCell.SensitiveOverlay addTarget:self action:@selector(wantMoreTouched:) forControlEvents:UIControlEventTouchUpInside];
             cell = myCell;
             break;
         }
@@ -435,25 +478,29 @@
     int index = 0;
     for(NSIndexPath *visibleIndex in visibleIndexes) {
         if((visibleIndex.section == 0)&&(visibleIndex.row == 0)) {
-            ImageHeaderCell *ivc = (ImageHeaderCell*)[visibleCells objectAtIndex:index];
-            CGFloat computedVisiblePart = 197-actualPosition;
-            //NSLog(@"visiblePart %f",computedVisiblePart);
-            ivc.clipsToBounds = computedVisiblePart<197;
-            ivc.Image.frame = (CGRectMake(0,-computedVisiblePart+197, ivc.Image.frame.size.width, computedVisiblePart));
+            //NSLog(@"%ld %ld",visibleIndex.section,visibleIndex.row);
+            UITableViewCell *cell = [visibleCells objectAtIndex:index];
+            // /!\ sometime the lenght of visibleCells and indexPAthForVisibleRows
+            // are not the same so check nature for woring cell
+            if([cell isKindOfClass:[ImageHeaderCell class]] ) {
+                ImageHeaderCell *ivc = (ImageHeaderCell*)cell;
+                CGFloat computedVisiblePart = 197-actualPosition;
+                //NSLog(@"visiblePart %f",computedVisiblePart);
+                ivc.clipsToBounds = computedVisiblePart<197;
+                ivc.Image.frame = (CGRectMake(0,-computedVisiblePart+197, ivc.Image.frame.size.width, computedVisiblePart));
+            }
         }
         index++;
     }
 }
 
-/*
 - (void) wantMoreTouched:(id) sender {
     UIButtonWithData *but = (UIButtonWithData*) sender;
     NSString *idPub = [but getValue];
     publicationId = idPub;
     NSLog(@"WantMoreTouhed %@",idPub);
-    [self viewDidLoad];
+    [self loadNetworkData];
 }
-*/
 
 /*
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -462,7 +509,7 @@
 */
 
 #pragma mark - Navigation
-
+/*
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     NSLog(@"what %@",segue.identifier);
@@ -477,5 +524,5 @@
         // Pass the selected object to the new view controller.
     }
 }
-
+*/
 @end

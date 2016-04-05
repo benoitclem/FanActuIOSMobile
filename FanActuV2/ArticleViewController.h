@@ -19,10 +19,12 @@
     
     NSString *publicationId;
 }
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UITableView *articleTable;
 
+- (void) loadNetworkData;
 - (void) setPublicationId:(NSString*) pId;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 // Protocol delegate
 - (void)attributedLabel:(TTTAttributedLabel *)label

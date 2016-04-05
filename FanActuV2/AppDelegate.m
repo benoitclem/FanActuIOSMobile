@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "FanActuHTTPRequest.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @interface AppDelegate ()
 
@@ -18,16 +20,14 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    // Register for local notification
-    UIUserNotificationType types = UIUserNotificationTypeBadge |
-                                    UIUserNotificationTypeSound |
-                                    UIUserNotificationTypeAlert;
+    // Apple notification stuffs
+    [self registerForNotificationWithApplication: application];
     
-    UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-    [application registerUserNotificationSettings:mySettings];
-    
+    // Facebook stuffs
+    [[FBSDKApplicationDelegate sharedInstance] application:application
+                             didFinishLaunchingWithOptions:launchOptions];
     // Register fetch
-    [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
+    //[application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
     //sleep(1);
     return YES;
 }
@@ -41,17 +41,18 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     NSLog(@"Create Notif shedule");
-    [self scheduleAlarmForDate:[NSDate dateWithTimeIntervalSinceNow:10]];
+    //[self scheduleAlarmForDate:[NSDate dateWithTimeIntervalSinceNow:10]];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     NSLog(@"Create Notif shedule");
-    [self cancelOldNotifications];
+    //[self cancelOldNotifications];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [FBSDKAppEvents activateApp];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -60,12 +61,45 @@
     [self saveContext];
 }
 
+// Fb something
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                          openURL:url
+                                                sourceApplication:sourceApplication
+                                                       annotation:annotation];
+}
+
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"Do some networking task");
-    if (completionHandler)
-        completionHandler(UIBackgroundFetchResultFailed);
+    [FanActuHTTPRequest requestNotificationWithCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+        if(data) {
+            // There is some data
+            NSMutableDictionary * all = [NSJSONSerialization
+                                         JSONObjectWithData:data
+                                         options:NSJSONReadingMutableContainers
+                                         error:&error] ;
+            NSLog(@"all %@",all);
+            NSMutableArray *notification = [all objectForKey:@"notifications"];
+            if(notification) {
+                if([notification count] >= 1) {
+                    NSMutableDictionary *notificationContent = [notification objectAtIndex:0];
+                    NSString *title = [notificationContent objectForKey:@"title"];
+                    NSString *desc = [notificationContent objectForKey:@"description"];
+                    NSLog(@"%@ %@", title, desc);
+                    [self scheduleNotificationWithTitle:title andBody:desc];
+                }
+            }
+            
+            if (completionHandler)
+                completionHandler(UIBackgroundFetchResultNewData);
+        } else {
+            // No Data
+            if (completionHandler)
+                completionHandler(UIBackgroundFetchResultNoData);
+        }
+    }];
 }
-    
+
 #pragma mark - Core Data stack
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -155,24 +189,47 @@
         [app cancelAllLocalNotifications];
 }
 
-- (void)scheduleAlarmForDate:(NSDate*)theDate {
-    UIApplication* app = [UIApplication sharedApplication];
-    
+- (void) scheduleNotificationWithTitle:(NSString*) title andBody:(NSString*) body{
     // Cancel old notifications if need
     [self cancelOldNotifications];
     
     // Create a new notification.
-    UILocalNotification* alarm = [[UILocalNotification alloc] init];
-    if (alarm)
-    {
-        alarm.fireDate = theDate;
-        alarm.timeZone = [NSTimeZone defaultTimeZone];
-        alarm.repeatInterval = 0;
-        alarm.soundName = @"alarmsound.caf";
-        alarm.alertBody = @"Time to wake up!";
-        
-        [app scheduleLocalNotification:alarm];
+    UILocalNotification* notif = [[UILocalNotification alloc] init];
+    if (notif) {
+
+        notif.fireDate = [NSDate dateWithTimeIntervalSinceNow:2];
+        notif.timeZone = [NSTimeZone defaultTimeZone];
+        notif.repeatInterval = 0;
+        notif.soundName = @"alarmsound.caf";
+        notif.alertTitle = title;
+        notif.alertBody = body;
+         NSLog(@" on trigg la demande de notif");
+        UIApplication* app = [UIApplication sharedApplication];
+        [app scheduleLocalNotification:notif];
     }
 }
+
+- (void) registerForNotificationWithApplication:(UIApplication*) application {
+    // Register for local notification
+    UIUserNotificationType types = UIUserNotificationTypeBadge |
+    UIUserNotificationTypeSound |
+    UIUserNotificationTypeAlert;
+    
+    UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+    [application registerUserNotificationSettings:mySettings];
+    
+    // Start Registering remote notification system
+    [application registerForRemoteNotifications];
+}
+
+- (void) application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+    NSLog(@"Registered with id %@", deviceToken );
+}
+
+- (void) application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
+    NSLog(@"Failed to register for remote notification");
+    NSLog(@"%@",error);
+}
+
 
 @end

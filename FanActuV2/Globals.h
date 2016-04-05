@@ -12,6 +12,7 @@
 
 // Utils
 + (NSString *) getEncodedDate:(NSString*) dateString;
++ (NSString *) getDateStringWithDate:(NSDate*) date;
 
 // Storage
 + (NSArray*) getUnivers;

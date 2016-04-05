@@ -37,16 +37,32 @@
     //NSLog(@"Slider Value Changed");
     UISlider *slider = (UISlider*) sender;
     NSLog(@"Slider Value = %f",slider.value);
-    if(slider.value <0.33) {
+    if(slider.value <0.17) {
         [slider setValue:0.0 animated:YES];
-        [actuLabelLevel setText:@"MINUS"];
-    }else if(slider.value < 0.66) {
-        [slider setValue:0.5 animated:YES];
-        [actuLabelLevel setText:@"MOYEN"];
+        [actuLabelLevel setText:@"PAS FAN"];
+        [FanActuHTTPRequest updateUniversWithId:@"0" andLevel:@0 andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+            NSLog(@"Update Done");
+        }];
+    }else if(slider.value < 0.5) {
+        [slider setValue:0.33 animated:YES];
+        [actuLabelLevel setText:@"MINI FAN"];
+        [FanActuHTTPRequest updateUniversWithId:@"0" andLevel:@1 andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+            NSLog(@"Update Done");
+        }];
+    } else if(slider.value < 0.83) {
+        [slider setValue:0.66 animated:YES];
+        [actuLabelLevel setText:@"BIG FAN"];
+        [FanActuHTTPRequest updateUniversWithId:@"0" andLevel:@2 andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+            NSLog(@"Update Done");
+        }];
     } else {
         [slider setValue:1.0 animated:YES];
-        [actuLabelLevel setText:@"HARDCORE"];
+        [actuLabelLevel setText:@"HARDCORE FAN"];
+        [FanActuHTTPRequest updateUniversWithId:@"0" andLevel:@3 andCompletionBlock:^(NSData *data, NSURLResponse *response, NSError *error){
+            NSLog(@"Update Done");
+        }];
     }
+    
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle{
@@ -113,6 +129,9 @@
         if(isNotificationScreen) {
             if(indexPath.row == 0){
                 cell = [tableView dequeueReusableCellWithIdentifier:@"ActuRow" forIndexPath:indexPath];
+                UIImageView *img = (UIImageView *)[cell.contentView viewWithTag:20];
+                img.image = [UIImage imageNamed:@"placeholderImg.jpg"];
+                
                 UILabel *Title = (UILabel*)[cell.contentView viewWithTag:10];
                 [Title setText:@"ACTU"];
                 UISlider *Slider = (UISlider*)[cell.contentView viewWithTag:11];
@@ -120,7 +139,7 @@
                 Slider.value = 1.0;
                 UILabel *actuLabel = (UILabel*)[cell.contentView viewWithTag:12];
                 actuLabelLevel = actuLabel;
-                [actuLabel setText:@"HARDCORE"];
+                [actuLabel setText:@"HARDCORE FAN"];
             } else {
                 //
                 cell = [tableView dequeueReusableCellWithIdentifier:@"UniversRowNotif" forIndexPath:indexPath];
@@ -243,7 +262,6 @@
     NSLog(@"This is a segue %@",segue.identifier);
     if(segue.identifier){
         if([segue.identifier compare:@"segue1"] == NSOrderedSame) {
-            NSLog(@"caca");
             ArticleListViewController *avc = (ArticleListViewController*)segue.destinationViewController;
             UITableViewCell *cell = (UITableViewCell*) sender;
             NSString *uN = [(UILabel*)[cell.contentView viewWithTag:10] text];
@@ -253,7 +271,6 @@
                 if(universName) {
                     if([universName compare:uN] == NSOrderedSame){
                         [avc setIdUnivers:[u objectForKey:@"idUnivers"]];
-                        NSLog(@"Matched %@",[u objectForKey:@"idUnivers"]);
                     }
                 }
             }

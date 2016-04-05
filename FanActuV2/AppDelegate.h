@@ -21,7 +21,9 @@
 - (NSURL *)applicationDocumentsDirectory;
 
 - (void)cancelOldNotifications;
-- (void)scheduleAlarmForDate:(NSDate*)theDate;
+- (void) scheduleNotificationWithTitle:(NSString*) title andBody:(NSString*) body;
+
+- (void) registerForNotificationWithApplication:(UIApplication*) application;
 
 @end
 

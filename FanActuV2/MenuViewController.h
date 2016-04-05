@@ -17,4 +17,9 @@
 
 - (IBAction)myUnwindAction:(UIStoryboardSegue*)unwindSegue;
 
+- (IBAction)toFacebook:(id)sender;
+- (IBAction)toTwitter:(id)sender;
+- (IBAction)toGoogle:(id)sender;
+- (IBAction)toInstagram:(id)sender;
+- (IBAction)toDailymotion:(id)sender;
 @end

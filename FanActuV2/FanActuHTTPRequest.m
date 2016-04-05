@@ -8,11 +8,13 @@
 
 #import "FanActuHTTPRequest.h"
 #import <UIKit/UIKit.h>
+#import "Debug.h"
 
 static NSString *baseURL = @"http://m.fanactu.com/device";
 static NSString *articlesListURN = @"load";
 static NSString *articleURN = @"article";
 static NSString *universURN = @"univers";
+static NSString *notifictionURN = @"notification";
 static NSString *universUpdateURN = @"univers/update";
 
 @implementation FanActuHTTPRequest
@@ -26,11 +28,11 @@ static NSString *universUpdateURN = @"univers/update";
     NSURLSession *session = [NSURLSession sharedSession];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     if(postString!=nil){
-        NSLog(@"%@ - %@",url,postString);
+        NETLOG(@"%@ - %@",url,postString);
         [request setHTTPMethod:@"POST"];
         [request setHTTPBody:[postString dataUsingEncoding:NSUTF8StringEncoding]];
     } else {
-        NSLog(@"%@",url);
+        NETLOG(@"%@",url);
     }
     [[session dataTaskWithRequest:request completionHandler: completionBlock] resume];
 }
@@ -75,6 +77,12 @@ static NSString *universUpdateURN = @"univers/update";
     // Compose Url for requesting the Univers
     NSString *url = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],universUpdateURN,idUnivers,level];
     // Do the request
+    [FanActuHTTPRequest request:url withPostString:nil andCompletionBlock:completionBlock];
+}
+
++ (void)requestNotificationWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock {
+    // Compose Url for requesting the Univers
+    NSString *url = [NSString stringWithFormat:@"%@/%@/%@/",baseURL,[FanActuHTTPRequest getDeviceUID],notifictionURN];
     [FanActuHTTPRequest request:url withPostString:nil andCompletionBlock:completionBlock];
 }
 

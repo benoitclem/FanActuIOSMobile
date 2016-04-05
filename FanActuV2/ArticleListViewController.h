@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Swipeview.h"
 
+
 @interface ArticleListViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,SwipeViewDataSource, SwipeViewDelegate> {
     
     // Some consts
@@ -22,15 +23,17 @@
     NSMutableArray *hotList;
     
     // Reference to some screens elements
+    SwipeView *sw;
     UIPageControl *hotPageControl;
-    UIButton *B1;
-    UIButton *B2;
-    UIButton *B3;
+    UIButton *b1;
+    UIButton *b2;
+    UIButton *b3;
     UIColor *SelectedColor;
     UIColor *UnselectedColor;
 
     // States
     BOOL isSearchResult;
+    BOOL noMoreResults;
     BOOL isHotTapped;
     NSString *hotIdPub;
     int buttonSelected;
@@ -56,5 +59,10 @@
 - (void) HotTapped:(NSString*) n;
 
 - (NSMutableArray*) getDisplayedArticleList;
+
+- (UITableViewCell *) tableView:(UITableView *)tableView HotCellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (UITableViewCell *) tableView:(UITableView *)tableView ArticleCellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (UITableViewCell *) tableView:(UITableView *)tableView LoadingCellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (UITableViewCell *) HeaderCellForTableView:(UITableView *)tableView;
 
 @end

@@ -47,7 +47,7 @@
                                             JSONObjectWithData:data
                                             options:NSJSONReadingMutableContainers
                                             error:&error] objectForKey:@"univers"];
-        NSLog(@"univers %@",univers);
+        //NSLog(@"univers %@",univers);
         // Keep the univers in globals
         [Globals setUnivers:univers];
     }];
@@ -64,19 +64,19 @@
 
                                      // handle response
                                      NSMutableArray *hotList = [all objectForKey:@"hot"];
-                                     NSLog(@"Hot %@ ", hotList);
+                                     //NSLog(@"Hot %@ ", hotList);
                                      [Globals setHots:hotList];
 
                                      NSMutableArray *actuList = [all objectForKey:@"actus"];
-                                     NSLog(@"Actus %@ ", actuList);
+                                     //NSLog(@"Actus %@ ", actuList);
                                      [Globals setActus:actuList];
 
                                      NSMutableArray *topsWeek = [all objectForKey:@"topWeek"];
-                                     NSLog(@"week %@ ", topsWeek);
+                                     //NSLog(@"week %@ ", topsWeek);
                                      [Globals setTopsWeek:topsWeek];
                                      
                                      NSMutableArray *topsMonth = [all objectForKey:@"topMonth"];
-                                     NSLog(@"month %@ ", topsMonth);
+                                     //NSLog(@"month %@ ", topsMonth);
                                      [Globals setTopsMonth:topsMonth];
 
                                      NSDate *endTime = [NSDate date];

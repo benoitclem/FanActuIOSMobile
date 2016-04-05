@@ -10,6 +10,16 @@
 #import "TTTAttributedLabel.h"
 #import "UICategoryLabel.h"
 #import "UIButtonWithData.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+
+// ARTICLE LIST
+
+@interface HorizontalStackButtonCell: UITableViewCell
+@property (weak, nonatomic) IBOutlet UIStackView *stackView;
+@property (weak, nonatomic) IBOutlet UIStackView *arrowStackView;
+
+@end
+
 
 // ARTICLE
 
@@ -28,6 +38,7 @@
 
 @interface ShareCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *shares;
+@property (weak, nonatomic) IBOutlet FBSDKButton *fbLikeButton;
 
 @end
 

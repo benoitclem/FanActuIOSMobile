@@ -23,6 +23,7 @@ typedef void (^FanActuHTTPREquestCompletionHandler)(NSData *data, NSURLResponse 
 + (void)requestArticleWithId:(NSString*) articleId andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock ;
 + (void)requestUniversWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock ;
 + (void)updateUniversWithId:(NSString*) idUnivers andLevel:(NSNumber*) level andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock;
++ (void)requestNotificationWithCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock;
 + (void)requestImageWithUrlString:(NSString*) urlString andCompletionBlock:(FanActuHTTPREquestCompletionHandler) completionBlock;
 + (NSString*)getParameter:(NSString*) strKey fromArticles:(NSArray*) list withIndex:(NSInteger) integer;
 + (NSNumber*)getNumberParameter:(NSString*) strKey fromArticles:(NSArray*) list withIndex:(NSInteger) integer;
