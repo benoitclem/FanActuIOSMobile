@@ -21,6 +21,7 @@
     NSMutableArray *topWeek;
     NSMutableArray *topMonth;
     NSMutableArray *hotList;
+    NSMutableDictionary *metaUnivers;
     
     // Reference to some screens elements
     SwipeView *sw;

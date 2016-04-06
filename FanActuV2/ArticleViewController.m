@@ -10,6 +10,7 @@
 #import "CustomTableViewCells.h"
 #import "UIImageView+WebCache.h"
 #import "FanActuHTTPRequest.h"
+#import "Globals.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
@@ -64,8 +65,7 @@
                                   NSArray *blocs = [page objectForKey:@"blocs"];
                                   for(NSDictionary *bloc in blocs) {
                                       //NSLog(@"BLOCS %@",bloc);
-                                      if (([[bloc objectForKey:@"type"] integerValue] == 1) ||
-                                          ([[bloc objectForKey:@"type"] integerValue] == 5)) {
+                                      if ([[bloc objectForKey:@"type"] integerValue] == 1){
                                           // Paragraph
                                           if([(NSString*)[bloc objectForKey:@"value"] compare:@""] != NSOrderedSame) {
                                               NSDictionary *paragDic = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -118,6 +118,12 @@
                                                                   [bloc objectForKey:@"value"],@"id",
                                                                   [NSNumber numberWithFloat:1.5],@"ratio", nil];
                                           [composedArticle addObject:vidDic];
+                                      } else if ([[bloc objectForKey:@"type"] integerValue] == 5) {
+                                          NSDictionary *annecDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                    [NSNumber numberWithInt:10],@"ident",
+                                                                    [bloc objectForKey:@"value"],@"subtitle", nil];
+                                          
+                                          [composedArticle addObject:annecDic];
                                       } else if ([[bloc objectForKey:@"type"] integerValue] == 8) {
                                           NSDictionary *annecDic = [NSDictionary dictionaryWithObjectsAndKeys:
                                                                     [NSNumber numberWithInt:9],@"ident",
@@ -238,6 +244,7 @@
             ImageHeaderCell *myCell = (ImageHeaderCell*)[tableView dequeueReusableCellWithIdentifier:@"ImageHeader" forIndexPath:indexPath];
             NSString *visualCoverUrl = (NSString *)[blockOfInterest objectForKey:@"visualCover"];
             NSString *category = (NSString *)[blockOfInterest objectForKey:@"category"];
+            //NSLog(@"%@",visualCoverUrl);
             [myCell.Image sd_setImageWithURL:[NSURL URLWithString:visualCoverUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
             myCell.Image.clipsToBounds = true;
             [myCell.Category setText:[category uppercaseString]];
@@ -249,8 +256,24 @@
             NSString *title = (NSString *)[blockOfInterest objectForKey:@"title"];
             NSString *when = (NSString *)[blockOfInterest objectForKey:@"when"];
             NSString *who = (NSString *)[blockOfInterest objectForKey:@"who"];
-            [myCell.Title setText:[title uppercaseString]];
-            [myCell.WhenWho setText:[NSString stringWithFormat:@"%@ | par %@",when,[who uppercaseString]]];
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+            paragraphStyle.minimumLineHeight = 32.f;
+            paragraphStyle.maximumLineHeight = 32.f;
+        
+            UIFont *font = [UIFont fontWithName:@"RobotoCondensed-Bold" size:29.f];
+            //UIFont *font = [UIFont fontWithName:@"AmericanTypewriter" size:18.f];
+            NSDictionary *attributtes = @{
+                                          NSParagraphStyleAttributeName : paragraphStyle,
+                                          };
+            myCell.Title.font = font;
+            myCell.Title.attributedText = [[NSAttributedString alloc] initWithString:[title uppercaseString]
+                                                                           attributes:attributtes];
+            //[myCell.Title setText:[title uppercaseString]];
+            NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+            [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+            NSDate *date = [dateFormat dateFromString:when];
+            NSString *strDate = [Globals getDateStringWithDate:date];
+            [myCell.WhenWho setText:[NSString stringWithFormat:@"%@ | Par %@",strDate,[who uppercaseString]]];
             cell = myCell;
             break;
         }
@@ -275,9 +298,10 @@
             FBSDKLikeControl *button = [[FBSDKLikeControl alloc] init];
             button.objectID = @"https://www.facebook.com/FacebookDevelopers";
             */
+            /*
             FBSDKLikeButton *button = [[FBSDKLikeButton alloc] init];
             button.objectID =  @"https://www.facebook.com/FacebookDevelopers";
-            [myCell addSubview:button];
+            [myCell addSubview:button];*/
             cell = myCell;
             break;
         }
@@ -423,6 +447,29 @@
             cell = myCell;
             break;
         }
+        case 10: {
+            //NSLog(@"CACA");
+            SubtitleCell *myCell = (SubtitleCell*)[tableView dequeueReusableCellWithIdentifier:@"Subtitle" forIndexPath:indexPath];
+            NSString *Subtitle = (NSString *)[blockOfInterest objectForKey:@"subtitle"];
+            NSLog(@"Subtitle: %@",Subtitle);
+            //[myCell.Subtitle setText:[Subtitle uppercaseString]];
+            
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+            paragraphStyle.minimumLineHeight = 25.f;
+            paragraphStyle.maximumLineHeight = 25.f;
+            
+            UIFont *font = [UIFont fontWithName:@"RobotoCondensed-Bold" size:22.f];
+            //UIFont *font = [UIFont fontWithName:@"AmericanTypewriter" size:18.f];
+            NSDictionary *attributtes = @{
+                                          NSParagraphStyleAttributeName : paragraphStyle,
+                                          };
+            myCell.Subtitle.font = font;
+            myCell.Subtitle.attributedText = [[NSAttributedString alloc] initWithString:[Subtitle uppercaseString]
+                                                                          attributes:attributtes];
+            
+            cell = myCell;
+            break;
+        }
         default: {
             EmptyCell *myCell = (EmptyCell*)[tableView dequeueReusableCellWithIdentifier:@"Empty" forIndexPath:indexPath];
             cell = myCell;
@@ -463,8 +510,10 @@
                 return height+2*margin;
             }
         }
+        default: {
+            return UITableViewAutomaticDimension;
+        }
     }
-    return UITableViewAutomaticDimension;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView_

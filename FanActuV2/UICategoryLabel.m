@@ -20,7 +20,7 @@
 
 - (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines
 {
-    UIEdgeInsets insets = {0, 5, 0, 7};
+    UIEdgeInsets insets = {2, 6, 0, 6};
     CGRect rect = [super textRectForBounds:UIEdgeInsetsInsetRect(bounds, insets)
                     limitedToNumberOfLines:numberOfLines];
     
@@ -34,7 +34,7 @@
 
 
 - (void)drawTextInRect:(CGRect)rect {
-    UIEdgeInsets insets = {0, 5, 0, 7};
+    UIEdgeInsets insets = {2, 6, 0, 6};
     [super drawTextInRect:UIEdgeInsetsInsetRect(rect, insets)];
 }
 

@@ -49,7 +49,7 @@
                                                           options:NSJSONReadingMutableContainers
                                                           error:&error];
                              
-                            // NSLog(@"RAW %@",all);
+                             NSLog(@"RAW %@",all);
                              // handle response
                              NSMutableArray *hl = [all objectForKey:@"hot"];
                              //NSLog(@"Hot %@ ", hl);
@@ -70,9 +70,11 @@
                              //NSLog(@"month %@ ", topsMonth);
                              [Globals setTopsMonth:topsMonth];
                              topMonth = topsWeek;
+                                     
+                             metaUnivers = [all objectForKey:@"univers"];
                              
                              isSearchResult = NO;
-                            buttonSelected = 1;
+                             buttonSelected = 1;
                              [self performSelectorOnMainThread:@selector(reloadAndRewind) withObject:nil waitUntilDone: NO];
                              //[self.ArticleTableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
                              NSLog(@"ReloadedTableView");
@@ -398,12 +400,14 @@
 - (UITableViewCell *) tableView:(UITableView*)tableView CoverCellForRowAtIndexPath:(NSIndexPath *) indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"headerCover" forIndexPath:indexPath];
     UIImageView *imgView = (UIImageView *)[cell.contentView viewWithTag:10];
-    //[imgView sd_setImageWithURL:[NSURL URLWithString:strImgUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
+    NSString *coverUrl = [NSString stringWithString:[metaUnivers objectForKey:@"cover"]];
+    NSString *univName = [NSString stringWithString:[metaUnivers objectForKey:@"nom"]];
+    [imgView sd_setImageWithURL:[NSURL URLWithString:coverUrl] placeholderImage:[UIImage imageNamed:@"placeholderImg.jpg"]];
     UILabel *universLabel = (UILabel *)[cell.contentView viewWithTag:12];
-    if(!isSearchResult)
-        [universLabel setText:@"!!UNIVERS!!"];
-    else
-        [universLabel setText:@""];
+    /*if(!isSearchResult)
+        [universLabel setText:[univName uppercaseString]];
+    else*/
+    [universLabel setText:@""];
     return cell;
 }
 
@@ -701,6 +705,11 @@
                 //NSLog(@"Universe Thing");
                 CGFloat computedVisiblePart = 255-actualPosition;
                 UITableViewCell *tvc = [visibleCells objectAtIndex:index];
+                UIImageView *img = (UIImageView *)[tvc.contentView viewWithTag:10];
+                UIImageView *ovl = (UIImageView *)[tvc.contentView viewWithTag:11];
+                img.frame = (CGRectMake(0,-computedVisiblePart+255, img.frame.size.width, computedVisiblePart));
+                ovl.frame = (CGRectMake(0,-computedVisiblePart+255, ovl.frame.size.width, computedVisiblePart));
+                /*
                 UILabel *universLabel = (UILabel *)[tvc.contentView viewWithTag:12];
                 if(isSearchResult) {
                     //[universLabel setText:@"RESULTS"];
@@ -708,6 +717,7 @@
                 } else {
                     [universLabel setText:[NSString stringWithFormat:@"!!%d!!",(int)computedVisiblePart]];
                 }
+                 */
             }
         }
         index++;

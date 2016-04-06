@@ -40,7 +40,7 @@
                     </variation>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" tag="11" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATMAN V SUPERMAN: UNE EPIQUE BANDE ANONCE FINALE" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ogo-DR-Ghu">
-                    <rect key="frame" x="39" y="172" width="321" height="56"/>
+                    <rect key="frame" x="12" y="172" width="376" height="56"/>
                     <fontDescription key="fontDescription" name="RobotoCondensed-Bold" family="Roboto Condensed" pointSize="21"/>
                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -57,7 +57,7 @@
                 <constraint firstItem="tzp-nr-DG3" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="00g-jH-re5"/>
                 <constraint firstAttribute="bottom" secondItem="tzp-nr-DG3" secondAttribute="bottom" id="0Df-bp-ioj"/>
                 <constraint firstAttribute="bottom" secondItem="2YI-1f-s2a" secondAttribute="bottom" id="3Qi-Q1-FOa"/>
-                <constraint firstItem="bea-TG-67T" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="39" id="4Nt-ig-vNi"/>
+                <constraint firstItem="bea-TG-67T" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="4Nt-ig-vNi"/>
                 <constraint firstAttribute="trailing" secondItem="i2r-xW-gee" secondAttribute="trailing" id="Fuu-MJ-yyC"/>
                 <constraint firstItem="i2r-xW-gee" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="WEC-3W-Af2"/>
                 <constraint firstAttribute="trailing" secondItem="2YI-1f-s2a" secondAttribute="trailing" id="XMe-gr-2v6"/>
@@ -65,9 +65,9 @@
                 <constraint firstItem="tzp-nr-DG3" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Yhl-rH-4zD"/>
                 <constraint firstItem="Ogo-DR-Ghu" firstAttribute="top" secondItem="bea-TG-67T" secondAttribute="bottom" constant="3" id="als-pD-HME"/>
                 <constraint firstItem="i2r-xW-gee" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="cBw-Sk-gaE"/>
-                <constraint firstAttribute="trailing" secondItem="Ogo-DR-Ghu" secondAttribute="trailing" constant="40" id="cF5-0E-6GN"/>
+                <constraint firstAttribute="trailing" secondItem="Ogo-DR-Ghu" secondAttribute="trailing" constant="12" id="cF5-0E-6GN"/>
                 <constraint firstAttribute="trailing" secondItem="tzp-nr-DG3" secondAttribute="trailing" id="ifI-4n-Yc1"/>
-                <constraint firstItem="Ogo-DR-Ghu" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="39" id="q0A-Xr-xRI"/>
+                <constraint firstItem="Ogo-DR-Ghu" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="q0A-Xr-xRI"/>
                 <constraint firstAttribute="bottom" secondItem="i2r-xW-gee" secondAttribute="bottom" id="qFk-dY-fgN"/>
                 <constraint firstAttribute="bottom" secondItem="Ogo-DR-Ghu" secondAttribute="bottom" constant="27" id="uJT-Z5-b3D"/>
                 <constraint firstItem="2YI-1f-s2a" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="yBS-Hy-wSD"/>

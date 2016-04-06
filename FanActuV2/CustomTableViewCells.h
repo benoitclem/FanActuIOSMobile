@@ -36,6 +36,11 @@
 
 @end
 
+@interface SubtitleCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *Subtitle;
+
+@end
+
 @interface ShareCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *shares;
 @property (weak, nonatomic) IBOutlet FBSDKButton *fbLikeButton;
